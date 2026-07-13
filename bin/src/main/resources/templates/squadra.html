@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettaglio Squadra</title>
+</head>
+<body>
+
+    <!-- Nome della squadra grande in alto -->
+    <h1 th:text="${squadra.nome}">Nome Squadra</h1>
+
+    <!-- Informazioni della squadra -->
+    <div>
+        <strong>Città:</strong> <span th:text="${squadra.citta}">Roma</span><br>
+        <strong>Anno di fondazione:</strong> <span th:text="${squadra.annoDiFondazione}">2000</span>
+    </div>
+
+    <hr>
+
+    <!-- Lista dei giocatori -->
+    <h2>Rosa dei Giocatori</h2>
+    <ul>
+        <!-- Cicliamo sulla lista "giocatori" che ci ha passato il Controller -->
+        <li th:each="giocatore : ${giocatori}">
+            <span th:text="${giocatore.nome}">Mario</span> 
+            <span th:text="${giocatore.cognome}">Rossi</span> 
+            - Ruolo: <i th:text="${giocatore.ruolo}">Attaccante</i>
+        </li>
+    </ul>
+
+    <br>
+    <!-- Un comodo link per tornare indietro -->
+    <a href="javascript:history.back()">Torna indietro</a>
+
+</body>
+</html>

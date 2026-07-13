@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Classifica Torneo</title>
+</head>
+<body>
+
+    <h1>Classifica del Torneo</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Posizione</th>
+                <th>Squadra</th>
+                <th>Punti</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="riga, iterStat : ${classifica}">	
+                <td th:text="${iterStat.count}">1</td>
+				<td>
+				<a th:href="@{/squadra/{id}(id=${riga.squadra.id})}" th:text="${riga.squadra.nome}">Nome Squadra</a>
+				</td>
+                <td th:text="${riga.punti}">0</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <a th:href="@{/tornei}">Torna alla lista dei tornei</a>
+
+</body>
+</html>
