@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Elenco Tornei</title>
+</head>
+<body>
+
+    <h1>Tutti i Tornei Disponibili</h1>
+
+    <ul>
+        <li th:each="torneo : ${elencoTornei}">
+			
+			<a th:href="@{/torneo/{id}/classifica(id=${torneo.id})}">
+			    <strong th:text="${torneo.nome}">Nome Torneo</strong>
+			</a> -
+			
+            Anno: <span th:text="${torneo.anno}">2000</span>
+			
+			<br>
+			<i>Descrizione: <span th:text="${torneo.descrizione}">Qui andrà la descrizione del torneo...</span></i>
+			<br><br>
+        </li>
+    </ul>
+
+</body>
+</html>
