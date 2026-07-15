@@ -1,11 +1,17 @@
-package it.uniroma3.siw.model;
+	package it.uniroma3.siw.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Partita {
@@ -21,8 +27,9 @@ public class Partita {
     private String stato;
 
     @ManyToOne
+    @JoinColumn(name = "torneo_id")
     private Torneo torneo;
-
+    
     @ManyToOne
     private Squadra squadraCasa;
 
@@ -31,6 +38,17 @@ public class Partita {
 
     @ManyToOne
     private Arbitro arbitro;
+    
+    @OneToMany(mappedBy = "partita", cascade = CascadeType.ALL)
+    private List<Commento> commenti = new ArrayList<>();
+
+    public List<Commento> getCommenti() {
+        return commenti;
+    }
+
+    public void setCommenti(List<Commento> commenti) {
+        this.commenti = commenti;
+    }
 
     public Partita() {
     }

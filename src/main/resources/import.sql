@@ -1,9 +1,8 @@
 -- ==========================================
 -- 1. UTENTI
 -- ==========================================
-INSERT INTO utente (id, username, password, ruolo) VALUES (nextval('utente_seq'), 'admin', 'admin123', 'ADMIN');
-INSERT INTO utente (id, username, password, ruolo) VALUES (nextval('utente_seq'), 'mario.rossi', 'user123', 'USER');
-INSERT INTO utente (id, username, password, ruolo) VALUES (nextval('utente_seq'), 'luigi.bianchi', 'user123', 'USER');
+INSERT INTO utente (id, username, password, ruolo) VALUES (nextval('utente_seq'), 'admin', '$2a$10$B3QjT.kE0wLpPSK1y35mA.fSueHyr/BOhYgjkB0FwOxMHEVq2VNdm', 'ADMIN');
+INSERT INTO utente (id, username, password, ruolo) VALUES (nextval('utente_seq'), 'mario', '$2a$10$B3QjT.kE0wLpPSK1y35mA.fSueHyr/BOhYgjkB0FwOxMHEVq2VNdm', 'USER');
 
 -- ==========================================
 -- 2. TORNEI

@@ -11,6 +11,16 @@ import java.util.List;
 public class ServArbitro {
 
     @Autowired
-    private RepoArbitro arbitroRepository;
+    private RepoArbitro repoArbitro;
+    
+    @Transactional
+    public List<Arbitro> findAll() {
+        return (List<Arbitro>) repoArbitro.findAll();
+    }
+    
+    @Transactional(readOnly = true)
+    public Arbitro findById(Long id) {
+        return repoArbitro.findById(id).orElse(null);
+    }
 
 }

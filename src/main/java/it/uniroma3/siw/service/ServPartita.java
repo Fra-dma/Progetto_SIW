@@ -5,12 +5,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import it.uniroma3.siw.model.Partita;
 import it.uniroma3.siw.repository.RepoPartita;
-import java.util.List;
 
 @Service
 public class ServPartita {
 
     @Autowired
-    private RepoPartita partitaRepository;
+    private RepoPartita repoPartita;
+    
+    @Transactional(readOnly = true)
+    public Partita findById(Long id) {
+        return repoPartita.findById(id).orElse(null);
+    }
+    
+    @Transactional
+    public Partita salvaPartita(Partita p) {
+        return repoPartita.save(p);
+    }
 
 }

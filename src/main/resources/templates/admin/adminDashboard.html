@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pannello Amministratore</title>
+</head>
+<body>
+
+    <h1>Benvenuto nel Pannello di Controllo</h1>
+    <p>Scegli un'operazione da eseguire:</p>
+
+    <ul>
+        <li>
+            <a th:href="@{/admin/torneo/nuovo}">Crea un nuovo Torneo</a>
+        </li>
+        <li>	
+            <a th:href="@{/admin/squadra/nuova}">Aggiungi una nuova Squadra</a>
+        </li>
+    </ul>
+
+    <br>
+    <a href="/tornei">Torna alla Homepage pubblica</a>
+
+</body>
+</html>

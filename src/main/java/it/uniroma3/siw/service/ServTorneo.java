@@ -20,19 +20,40 @@ import java.util.Map;
 public class ServTorneo {
 
     @Autowired
-    private RepoTorneo torneoRepository;
+    private RepoTorneo repoTorneo;
 
     @Autowired
-    private RepoPartita partitaRepository;
+    private RepoPartita repoPartita;
 
     @Transactional(readOnly = true)
     public List<Torneo> findAllTornei() {
-        return (List<Torneo>) torneoRepository.findAll();
+        return (List<Torneo>) repoTorneo.findAll();
+    }
+    
+    public List<Partita> findAllPartite(Long idTorneo) {
+        Torneo torneo = repoTorneo.findById(idTorneo).orElse(null);
+        
+        if (torneo == null) {
+            return new ArrayList<>(); 
+        }
+        
+        return torneo.getPartite();
+    }
+    
+    @Transactional
+    public Torneo salvaTorneo(Torneo torneo) {
+        return repoTorneo.save(torneo);
+    }
+    
+    
+    @Transactional(readOnly = true)
+    public Torneo findById(Long id) {
+        return repoTorneo.findById(id).orElse(null);
     }
 
     @Transactional(readOnly = true)
     public List<ClassificaSquadra> calcolaClassifica(Long idTorneo) {
-        Torneo torneo = torneoRepository.findById(idTorneo).orElse(null);
+        Torneo torneo = repoTorneo.findById(idTorneo).orElse(null);
         List<ClassificaSquadra> classificaFinale = new ArrayList<>();
 
         if (torneo == null) {
@@ -46,7 +67,7 @@ public class ServTorneo {
         }
 
         // Passate dal DB solo le partite giocate
-        List<Partita> partiteGiocate = partitaRepository.findByTorneoIdAndStato(idTorneo, "PLAYED");
+        List<Partita> partiteGiocate = repoPartita.findByTorneoIdAndStato(idTorneo, "PLAYED");
 
         // Calcolo del punteggio
         for (Partita partita : partiteGiocate) {

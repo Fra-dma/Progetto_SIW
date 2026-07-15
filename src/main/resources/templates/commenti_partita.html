@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Commenti Partita</title>
+</head>
+<body>
+
+    <h1>Commenti della partita</h1>
+    
+    <div>
+        <strong th:text="${partita.squadraCasa.nome}">Squadra 1</strong> 
+        - 
+        <strong th:text="${partita.squadraOspite.nome}">Squadra 2</strong>
+    </div>
+    
+    <hr>
+
+    <h2>Tutti i commenti:</h2>
+    
+    <ul>
+        <li th:each="commento : ${commenti}">
+            <strong th:text="${commento.autore.username}">Username</strong>: 
+            <span th:text="${commento.testo}">Testo del commento...</span>
+        </li>
+    </ul>
+	
+	<div th:if="${isLogged}">
+	        <h3>Lascia un commento</h3>
+	            
+	        <form th:action="@{/partita/{id}/commento(id=${partita.id})}" method="POST">
+	            <div>
+	                <textarea name="testo" rows="4" cols="50" required placeholder="Scrivi qui il tuo commento..."></textarea>
+	            </div>
+	            <br>
+	            <button type="submit">Pubblica Commento</button>
+	        </form>
+	    </div>
+
+	    <!-- th:unless è il contrario di th:if (se non è loggato) -->
+	    <div th:unless="${isLogged}">
+	        <p>Devi <a th:href="@{/login}">accedere</a> per poter lasciare un commento.</p>
+	    </div>
+
+    <div th:if="${commenti.isEmpty()}">
+        <p>Non ci sono ancora commenti per questa partita. Sii il primo a scriverne uno!</p>
+    </div>
+
+    <br>
+    <a href="javascript:history.back()">Torna indietro</a>
+
+</body>
+</html>

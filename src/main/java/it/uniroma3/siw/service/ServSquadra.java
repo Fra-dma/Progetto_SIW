@@ -11,16 +11,21 @@ import java.util.List;
 public class ServSquadra {
 
     @Autowired
-    private RepoSquadra squadraRepository;
+    private RepoSquadra repoSquadra;
     
     @Transactional(readOnly = true)
     public List<Squadra> findAllSquadre() {
-        return (List<Squadra>) squadraRepository.findAll();
+        return (List<Squadra>) repoSquadra.findAll();
     }
     
     @Transactional(readOnly = true)
     public Squadra findById(Long id) {
-        return squadraRepository.findById(id).orElse(null);
+        return repoSquadra.findById(id).orElse(null);
+    }
+    
+    @Transactional
+    public Squadra salvaSquadra(Squadra squadra) {
+        return repoSquadra.save(squadra);
     }
 
 }
