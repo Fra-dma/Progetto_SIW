@@ -33,30 +33,38 @@ public class ControllerAdmin {
     	model.addAttribute("elencoTornei", servTorneo.findAllTornei());
         return "admin/adminDashboard";
     }
+    
+    @GetMapping("/admin/tornei/selezione")
+    public String selezionaTorneo(Model model) {
+        model.addAttribute("elencoTornei", servTorneo.findAllTornei());
+        return "admin/selezionaTorneo";
+    }
 
     @GetMapping("/admin/torneo/modifica/{id}")
     public String formModificaTorneo(@PathVariable("id") Long id, Model model) {
         model.addAttribute("torneo", servTorneo.findById(id));
         model.addAttribute("tutteLeSquadre", servSquadra.findAllSquadre());
         model.addAttribute("tuttiGliArbitri", servArbitro.findAll());
-        model.addAttribute("nuovaPartita", new Partita()); 
+        model.addAttribute("nuovaPartita", new Partita());
         return "admin/editTorneo";
     }
 
-    // 3. Salva modifiche torneo
+    //Salva modifiche torneo
     @PostMapping("/admin/torneo/modifica")
     public String salvaModificaTorneo(@ModelAttribute("torneo") Torneo torneo) {
         servTorneo.salvaTorneo(torneo);
         return "redirect:/admin/dashboard";
     }
 
-    // 4. Crea partita
+    //Crea partita
     @PostMapping("/admin/torneo/{id}/aggiungiPartita")
     public String aggiungiPartita(@PathVariable("id") Long idTorneo, 
                                   @ModelAttribute("nuovaPartita") Partita partita,
                                   @RequestParam("squadraCasaId") Long idCasa,
                                   @RequestParam("squadraOspiteId") Long idOspite,
                                   @RequestParam("arbitroId") Long idArbitro) {
+    	
+    	partita.setId(null);
         
         Torneo torneo = servTorneo.findById(idTorneo);
         partita.setTorneo(torneo);

@@ -20,7 +20,7 @@
         
         <h3>Seleziona Squadre Partecipanti:</h3>
         <div th:each="squadra : ${tutteLeSquadre}">
-            <input type="checkbox" th:field="*{squadre}" th:value="${squadra.id}" />
+            <input type="checkbox" th:field="*{squadrePartecipanti}" th:value="${squadra.id}" />
             <label th:text="${squadra.nome}"></label>
         </div>
         
@@ -54,7 +54,22 @@
             <option th:each="a : ${tuttiGliArbitri}" th:value="${a.id}" th:text="${a.nome}"></option>
         </select>
         <br>
+		<label>Risultato (Casa):</label> 
+				<input type="number" th:field="*{goalsHome}" min="0" />
+				<br>
+
+				<label>Risultato (Ospite):</label> 
+				<input type="number" th:field="*{goalsAway}" min="0" />
+				<br>
+
+				<label>Stato Partita:</label>
+				<select th:field="*{stato}">
+				    <option value="PLAYED">Da giocare</option>
+				    <option value="SCHEDULED">In corso</option>
+				</select>
+				<br>
         <button type="submit">Crea Partita</button>
+		
     </form>
 
     <br>

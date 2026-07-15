@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Seleziona Torneo</title>
+</head>
+<body>
+
+    <h1>Quale torneo vuoi modificare?</h1>
+    <p>Clicca sul nome del torneo per avviare la modifica:</p>
+
+    <ul>
+        <!-- Ciclo che crea una riga per ogni torneo trovato nel database -->
+        <li th:each="torneo : ${elencoTornei}">
+            <!-- Il link punta a /admin/torneo/modifica/ e aggiunge l'ID specifico -->
+            <a th:href="@{/admin/torneo/modifica/{id}(id=${torneo.id})}" th:text="${torneo.nome}">Nome Torneo</a>
+        </li>
+    </ul>
+
+    <br>
+    <a th:href="@{/admin/dashboard}">Torna alla Dashboard</a>
+
+</body>
+</html>

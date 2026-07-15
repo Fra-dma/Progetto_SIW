@@ -62,11 +62,11 @@ public class ControllerTorneo {
         model.addAttribute("torneo", new Torneo());
         return "admin/formNuovoTorneo.html";
     }
-
+    
     @PostMapping("/admin/torneo/nuovo")
     public String salvaTorneo(@ModelAttribute("torneo") Torneo torneo) {
         servTorneo.salvaTorneo(torneo);
-        return "redirect:/admin/torneo/" + torneo.getId() + "/gestisciPartite";
+        return "redirect:/admin/dashboard";
     }
     
     @GetMapping("/admin/torneo/{id}/gestisciPartite")
