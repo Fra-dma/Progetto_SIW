@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.Base64;
+import java.io.IOException;
 
 import it.uniroma3.siw.model.Commento;
 import it.uniroma3.siw.model.Partita;
@@ -50,7 +53,7 @@ public class ControllerCommento {
     }
     
     @PostMapping("/partita/{id}/commento")
-    public String aggiungiCommento(@PathVariable("id") Long idPartita,  @RequestParam("testo") String testo, Principal principal) {
+    public String aggiungiCommento(@PathVariable("id") Long idPartita, @RequestParam("testo") String testo, @RequestParam(value = "fileImmagine", required = false) MultipartFile file, Principal principal) {
         
         String usernameLoggato = principal.getName();
         
@@ -62,9 +65,45 @@ public class ControllerCommento {
         nuovoCommento.setAutore(autore);
         nuovoCommento.setPartita(partita);
         
+        if (file != null && !file.isEmpty()) {
+            try {
+                // Trasforma l'immagine in testo Base64
+                String immagineCodificata = Base64.getEncoder().encodeToString(file.getBytes());
+                nuovoCommento.setImmagineBase64(immagineCodificata);
+            } catch (IOException e) {
+                System.out.println("Errore durante il caricamento dell'immagine nel nuovo commento.");
+            }
+        }
+        
         servCommento.salvaCommento(nuovoCommento);
         
         return "redirect:/partita/" + idPartita + "/commenti"; 
+    }
+
+    @PostMapping("/commento/{id}/modifica")
+    public String salvaModificaCommento(@PathVariable("id") Long id, @RequestParam("testo") String testo, @RequestParam(value = "fileImmagine", required = false) MultipartFile file, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        
+        Commento commento = servCommento.findById(id);
+        
+        if (commento.getAutore().getUsername().equals(principal.getName())) {
+            commento.setTesto(testo);
+            
+            if (file != null && !file.isEmpty()) {
+                try {
+                    String immagineCodificata = Base64.getEncoder().encodeToString(file.getBytes());
+                    commento.setImmagineBase64(immagineCodificata);
+                } catch (IOException e) {
+                    System.out.println("Errore durante l'aggiornamento dell'immagine.");
+                }
+            }
+            
+            servCommento.salvaCommento(commento);
+        }
+        
+        return "redirect:/partita/" + commento.getPartita().getId() + "/commenti";
     }
     
     @GetMapping("/commento/{id}/modifica")
@@ -83,19 +122,4 @@ public class ControllerCommento {
         return "modifica_commento.html";
     }
 
-    @PostMapping("/commento/{id}/modifica")
-    public String salvaModificaCommento(@PathVariable("id") Long id, @RequestParam("testo") String testo, Principal principal) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-        
-        Commento commento = servCommento.findById(id);
-        
-        if (commento.getAutore().getUsername().equals(principal.getName())) {
-            commento.setTesto(testo);
-            servCommento.salvaCommento(commento);
-        }
-        
-        return "redirect:/partita/" + commento.getPartita().getId() + "/commenti";
-    }
 }

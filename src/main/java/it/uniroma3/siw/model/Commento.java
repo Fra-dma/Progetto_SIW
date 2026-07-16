@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -13,6 +14,9 @@ public class Commento {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    @Lob
+    private String immagineBase64;
 
     @Column(length = 1000)
     private String testo;
@@ -24,6 +28,14 @@ public class Commento {
     private Partita partita;
     
     public Commento() {
+    }
+    
+    public String getImmagineBase64() {
+        return immagineBase64;
+    }
+
+    public void setImmagineBase64(String immagineBase64) {
+        this.immagineBase64 = immagineBase64;
     }
 
     public Long getId() {

@@ -19,37 +19,53 @@
     <h2>Tutti i commenti:</h2>
     
     <ul>
-        <li th:each="commento : ${commenti}">
+        <li th:each="commento : ${commenti}" style="margin-bottom: 20px;">
             <strong th:text="${commento.autore.username}">Username</strong>: 
             <span th:text="${commento.testo}">Testo del commento...</span>
-			<a th:if="${commento.autore.username == currentUser}" th:href="@{/commento/{id}/modifica(id=${commento.id})}"> [Modifica]
+			
+            <a th:if="${commento.autore.username == currentUser}" th:href="@{/commento/{id}/modifica(id=${commento.id})}"> 
+                [Modifica]
 			</a>
+
+            <!-- MOSTRA L'IMMAGINE SE PRESENTE -->
+            <div th:if="${commento.immagineBase64 != null}" style="margin-top: 10px;">
+                <img th:src="@{'data:image/jpeg;base64,' + ${commento.immagineBase64}}" 
+                     style="max-width: 300px; border-radius: 8px;" alt="Immagine allegata al commento"/>
+            </div>
         </li>
     </ul>
 	
 	<div th:if="${isLogged}">
-	        <h3>Lascia un commento</h3>
-	            
-	        <form th:action="@{/partita/{id}/commento(id=${partita.id})}" method="POST">
-	            <div>
-	                <textarea name="testo" rows="4" cols="50" required placeholder="Scrivi qui il tuo commento..."></textarea>
-	            </div>
-	            <br>
-	            <button type="submit">Pubblica Commento</button>
-	        </form>
-	    </div>
+        <h3>Lascia un commento</h3>
+            
+        <!-- AGGIUNTO enctype="multipart/form-data" FONDAMENTALE PER I FILE -->
+        <form th:action="@{/partita/{id}/commento(id=${partita.id})}" method="POST" enctype="multipart/form-data">
+            <div>
+                <textarea name="testo" rows="4" cols="50" required placeholder="Scrivi qui il tuo commento..."></textarea>
+            </div>
+            
+            <!-- AGGIUNTO CAMPO PER CARICARE IL FILE -->
+            <div style="margin-top: 10px;">
+                <label>Allega un'immagine (opzionale):</label><br>
+                <input type="file" name="fileImmagine" accept="image/png, image/jpeg" />
+            </div>
+            <br>
+            
+            <button type="submit">Pubblica Commento</button>
+        </form>
+    </div>
 
-	    <!-- th:unless è il contrario di th:if (se non è loggato) -->
-	    <div th:unless="${isLogged}">
-	        <p>Devi <a th:href="@{/login}">accedere</a> per poter lasciare un commento.</p>
-	    </div>
+    <!-- th:unless è il contrario di th:if (se non è loggato) -->
+    <div th:unless="${isLogged}">
+        <p>Devi <a th:href="@{/login}">accedere</a> per poter lasciare un commento.</p>
+    </div>
 
     <div th:if="${commenti.isEmpty()}">
         <p>Non ci sono ancora commenti per questa partita. Sii il primo a scriverne uno!</p>
     </div>
 
     <br>
-    <a href="javascript:history.back()">Torna indietro</a>
+    <a href="/tornei">Torna indietro</a>
 
 </body>
 </html>

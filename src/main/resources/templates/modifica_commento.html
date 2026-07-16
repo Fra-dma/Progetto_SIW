@@ -8,12 +8,27 @@
 
     <h1>Modifica il tuo commento</h1>
     
-    <form th:action="@{/commento/{id}/modifica(id=${commento.id})}" method="POST">
+    <form th:action="@{/commento/{id}/modifica(id=${commento.id})}" method="POST" enctype="multipart/form-data">
+        
+		<!-- MOSTRA IL TESTO -->
         <div>
             <label>Testo:</label><br>
             <textarea name="testo" rows="4" cols="50" required th:text="${commento.testo}"></textarea>
         </div>
+        
+        <!-- MOSTRA L'IMMAGINE ATTUALE SE ESISTE -->
+        <div th:if="${commento.immagineBase64 != null}" style="margin-top: 15px; margin-bottom: 15px;">
+            <p style="margin: 0 0 5px 0;">Immagine attuale:</p>
+            <img th:src="@{'data:image/jpeg;base64,' + ${commento.immagineBase64}}" style="max-width: 200px; border-radius: 8px;" />
+        </div>
+
+        <!-- CAMPO PER CARICARE UNA NUOVA IMMAGINE -->
+        <div style="margin-top: 10px;">
+            <label>Carica una nuova immagine per sostituire la precedente (opzionale):</label><br>
+            <input type="file" name="fileImmagine" accept="image/png, image/jpeg" />
+        </div>
         <br>
+        
         <button type="submit">Salva Modifiche</button>
     </form>
 

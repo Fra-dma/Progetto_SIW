@@ -18,13 +18,11 @@ public class Giocatore {
     private String cognome;
     private LocalDate dataDiNascita;
     private String ruolo;
-    private Integer altezza; // Cm
+    private Integer altezza;
 
-    // Molti giocatori appartengono a una singola squadra
     @ManyToOne
     private Squadra squadra;
 
-    // Costruttore vuoto per Spring Boot
     public Giocatore() {
     }
 
