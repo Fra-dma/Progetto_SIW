@@ -8,6 +8,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Squadra {
 
@@ -19,15 +21,19 @@ public class Squadra {
     private Integer annoDiFondazione;
     private String citta;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "squadra")
     private List<Giocatore> giocatori;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "squadrePartecipanti")
     private List<Torneo> tornei;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "squadraCasa")
     private List<Partita> partiteInCasa;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "squadraOspite")
     private List<Partita> partiteInTrasferta;
 

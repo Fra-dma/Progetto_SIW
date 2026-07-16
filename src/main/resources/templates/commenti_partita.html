@@ -22,6 +22,8 @@
         <li th:each="commento : ${commenti}">
             <strong th:text="${commento.autore.username}">Username</strong>: 
             <span th:text="${commento.testo}">Testo del commento...</span>
+			<a th:if="${commento.autore.username == currentUser}" th:href="@{/commento/{id}/modifica(id=${commento.id})}"> [Modifica]
+			</a>
         </li>
     </ul>
 	

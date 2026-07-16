@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ricerca Squadre Live (React)</title>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+
+    <h1>Ricerca Squadre in Tempo Reale</h1>
+    <a href="/tornei">Torna alla Home</a>
+    <hr>
+
+    <div id="react-app"></div>
+
+    <script type="text/babel">
+        /*<![CDATA[*/
+        
+        // CREAZIONE COMPONENTE REACT
+        function RicercaSquadre() {
+            
+            const [squadre, setSquadre] = React.useState([]);
+            const [testoRicerca, setTestoRicerca] = React.useState("");
+
+            React.useEffect(() => {
+                fetch('/api/squadre')
+                    .then(response => response.json()) 
+                    .then(dati => setSquadre(dati));   
+            }, []);
+
+            const squadreFiltrate = squadre.filter(squadra => 
+                squadra.nome.toLowerCase().includes(testoRicerca.toLowerCase())
+            );
+
+            return (
+                <div>
+                    <input 
+                        type="text" 
+                        placeholder="Inizia a digitare il nome..." 
+                        value={testoRicerca}
+                        onChange={(e) => setTestoRicerca(e.target.value)} 
+                        style={{ padding: '10px', width: '300px', fontSize: '16px' }}
+                    />
+                    
+                    <ul>
+                        {squadreFiltrate.map(squadra => (
+                            <li key={squadra.id}>
+                                <strong>{squadra.nome}</strong> (Città: {squadra.citta})
+                            </li>
+                        ))}
+                    </ul>
+                    
+                    {squadreFiltrate.length === 0 && <p>Nessuna squadra trovata.</p>}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('react-app'));
+        root.render(<RicercaSquadre />);
+        
+        /*]]>*/
+    </script>
+
+</body>
+</html>

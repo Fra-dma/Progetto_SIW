@@ -1,0 +1,59 @@
+s<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuova Squadra</title>
+</head>
+<body>
+
+    <h1>Inserisci una Nuova Squadra</h1>
+
+    <form th:action="@{/admin/squadra/nuova}" th:object="${squadra}" method="post">
+        
+        <!-- Campo Nome -->
+        <div>
+            <label>Nome Squadra:</label><br>
+            <input type="text" th:field="*{nome}" required />
+        </div>
+        <br>
+
+        <!-- Campo Anno di Fondazione -->
+        <div>
+            <label>Anno di Fondazione:</label><br>
+            <input type="number" th:field="*{annoDiFondazione}" required />
+        </div>
+        <br>
+
+        <!-- Campo Città -->
+        <div>
+            <label>Città:</label><br>
+            <input type="text" th:field="*{citta}" required />
+        </div>
+        <br>
+
+        <!-- Selezione Giocatori (Checkbox) -->
+        <div>
+            <label><strong>Seleziona i Giocatori per questa squadra:</strong></label><br>
+            
+            <!-- Ciclo su tutti i giocatori passati dal Controller -->
+            <div th:each="giocatore : ${elencoGiocatori}">
+                <input type="checkbox" 
+                       th:field="*{giocatori}" 
+                       th:value="${giocatore.id}" />
+                <label th:text="${giocatore.nome} + ' ' + ${giocatore.cognome} + ' (' + ${giocatore.ruolo} + ')'"></label>
+            </div>
+            
+            <p th:if="${#lists.isEmpty(elencoGiocatori)}">Nessun giocatore disponibile nel database.</p>
+        </div>
+        <br><br>
+
+        <button type="submit" style="padding: 10px 20px; background-color: green; color: white; border: none; cursor: pointer;">
+            Salva Squadra
+        </button>
+    </form>
+
+    <br>
+    <a th:href="@{/admin/dashboard}">Annulla e torna alla Dashboard</a>
+
+</body>
+</html>

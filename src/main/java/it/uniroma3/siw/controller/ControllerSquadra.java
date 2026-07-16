@@ -54,7 +54,25 @@ public class ControllerSquadra {
 
     @PostMapping("/admin/squadra/nuova")
     public String salvaSquadra(@ModelAttribute("squadra") Squadra squadra) {
-        servSquadra.salvaSquadra(squadra);
+        
+        // 1. Salviamo prima la squadra per generare il suo ID nel database
+        Squadra squadraSalvata = servSquadra.salvaSquadra(squadra);
+        
+        // 2. Se l'admin ha selezionato dei giocatori dalla lista delle checkbox...
+        if (squadra.getGiocatori() != null) {
+            for (Giocatore g : squadra.getGiocatori()) {
+                // ... diciamo a ogni giocatore qual è la sua nuova squadra
+                g.setSquadra(squadraSalvata);
+                // Salviamo l'aggiornamento del giocatore nel database
+                servGiocatore.salvaGiocatore(g); 
+            }
+        }
+        
         return "redirect:/admin/dashboard";
+    }
+    
+    @GetMapping("/ricerca_squadre")
+    public String mostraPaginaRicercaReact() {
+        return "ricerca_squadre.html";
     }
 }

@@ -11,18 +11,29 @@
     <table border="1">
         <thead>
             <tr>
+				<!-- Info Squadra -->
                 <th>Posizione</th>
                 <th>Squadra</th>
                 <th>Punti</th>
+                <!-- Se non è ADMIN la nascondo-->
+                <th th:if="${isAdmin}">Azione</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="riga, iterStat : ${classifica}">	
                 <td th:text="${iterStat.count}">1</td>
-				<td>
-				<a th:href="@{/squadra/{id}(id=${riga.squadra.id})}" th:text="${riga.squadra.nome}">Nome Squadra</a>
-				</td>
+                <td>
+                    <a th:href="@{/squadra/{id}(id=${riga.squadra.id})}" th:text="${riga.squadra.nome}">Nome Squadra</a>
+                </td>
                 <td th:text="${riga.punti}">0</td>
+                
+                <!-- Se non è ADMIN la nascondo -->
+                <td th:if="${isAdmin}">
+                    <a th:href="@{/admin/torneo/{idTorneo}/squadra/{idSquadra}/rimuovi(idTorneo=${torneo.id}, idSquadra=${riga.squadra.id})}" 
+                       style="color: red;">
+                       [Rimuovi]
+                    </a>
+                </td>
             </tr>
         </tbody>
     </table>

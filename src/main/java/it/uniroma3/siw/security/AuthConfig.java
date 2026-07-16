@@ -22,24 +22,27 @@ public class AuthConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
-            		.requestMatchers(HttpMethod.POST, "/partita/*/commento").authenticated()
-            	    
-            	    // 2. REGOLE PUBBLICHE "CORAZZATE"
-            	    // NOVITÀ: Ho aggiunto i plurali (/tornei/**, /squadre/**), le classifiche e /error
-            	    .requestMatchers("/", "/tornei", "/tornei/**", "/torneo/**", "/classifiche/**", "/classifica/**", "/squadre", "/squadre/**", "/squadra/**", "/partita/**", "/error", "/css/**", "/images/**", "/login").permitAll()
-            	    
-            	    // 3. REGOLE ADMIN (Rotte riservate alla tua dashboard e alla creazione di elementi)
-            	    .requestMatchers("/admin/**").hasRole("ADMIN")
-            	    
-            	    // 4. IL RACCOGLITUTTO (Tutto ciò che non è in lista sopra viene bloccato)
-            	    .anyRequest().authenticated()
-            )
-            .formLogin((form) -> form
                 
+                // PUBBLICHE
+                .requestMatchers("/", "/tornei", "/tornei/**", "/torneo/**", "/classifiche/**", "/classifica/**", 
+                                 "/squadre", "/squadre/**", "/squadra/**", "/partita/**", "/error", 
+                                 "/css/**", "/images/**", "/login", "/ricerca_squadre", "/api/**" ).permitAll()
+                
+                // ESCLUSIVE PER L'AMMINISTRATOR
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                
+                // PER UTENTI LOGGATI (USER e ADMIN)
+                .anyRequest().authenticated()
+            )
+            
+            // CONFIGURAZIONE DEL LOGIN
+            .formLogin((form) -> form
                 .loginPage("/login")
                 .permitAll()
                 .defaultSuccessUrl("/tornei", true)
             )
+            
+            // CONFIGURAZIONE DEL LOGOUT
             .logout((logout) -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/tornei")

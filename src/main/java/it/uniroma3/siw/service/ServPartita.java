@@ -21,5 +21,10 @@ public class ServPartita {
     public Partita salvaPartita(Partita p) {
         return repoPartita.save(p);
     }
+    
+    @Transactional
+    public void deletePartita(Partita partita) {
+        this.repoPartita.delete(partita);
+    }
 
 }

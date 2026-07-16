@@ -12,15 +12,20 @@ import java.util.List;
 public class ServGiocatore {
 
     @Autowired
-    private RepoGiocatore giocatoreRepository;
+    private RepoGiocatore repoGiocatore;
 
     @Transactional(readOnly = true)
     public List<Giocatore> findAllGiocatori() {
-        return (List<Giocatore>) giocatoreRepository.findAll();
+        return (List<Giocatore>) repoGiocatore.findAll();
     }
     
     @Transactional(readOnly = true)
     public List<Giocatore> findBySquadra(Squadra squadra) {
-        return giocatoreRepository.findBySquadra(squadra);
+        return repoGiocatore.findBySquadra(squadra);
+    }
+    
+    @Transactional
+    public Giocatore salvaGiocatore(Giocatore g) {
+        return repoGiocatore.save(g);
     }
 }

@@ -8,37 +8,44 @@
 
     <h1>Elenco delle Partite</h1>
 
-	<table border="1">
-	        <thead>
-	            <tr>
-	                <th>Luogo</th>
-	                <th>Stato</th>
-	                <th>Squadra in Casa</th>
-	                <th>Risultato</th>
-	                <th>Squadra in Trasferta</th>
-	                <th>Azione</th> 
-	            </tr>
-	        </thead>
-	        <tbody>
-	            <tr th:each="partita : ${elencoPartite}">
-	                
-	                <td th:text="${partita.luogo}">Stadio</td>
-	                <td th:text="${partita.stato}">Stato</td>
-	                <td th:text="${partita.squadraCasa.nome}">Squadra 1</td>
-	                <td>
-	                    <span th:text="${partita.goalsHome}">0</span> 
-	                    - 
-	                    <span th:text="${partita.goalsAway}">0</span>
-	                </td>
-	                <td th:text="${partita.squadraOspite.nome}">Squadra 2</td>
-	               
-	                <td>
-	                    <a th:href="@{/partita/{id}/commenti(id=${partita.id})}">Vedi Commenti</a>
-	                </td>
-	                
-	            </tr>
-	        </tbody>
-	    </table>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Luogo</th>
+                <th>Stato</th>
+                <th>Squadra in Casa</th>
+                <th>Risultato</th>
+                <th>Squadra in Trasferta</th>
+                <th>Azione</th> 
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="partita : ${elencoPartite}">
+                
+                <td th:text="${partita.luogo}">Stadio</td>
+                <td th:text="${partita.stato}">Stato</td>
+                <td th:text="${partita.squadraCasa.nome}">Squadra 1</td>
+                <td>
+                    <span th:text="${partita.goalsHome}">0</span> 
+                    - 
+                    <span th:text="${partita.goalsAway}">0</span>
+                </td>
+                <td th:text="${partita.squadraOspite.nome}">Squadra 2</td>
+               
+                <!-- Entrambi i link di azione sono raggruppati in questa singola cella -->
+                <td>
+                    <a th:href="@{/partita/{id}/commenti(id=${partita.id})}">Vedi Commenti</a>
+                    
+                    <a th:if="${isAdmin}" 
+                       th:href="@{/admin/partita/{id}/rimuovi(id=${partita.id})}" 
+                       style="color: red; margin-left: 15px;">
+                       [Rimuovi]
+                    </a>
+                </td>
+                
+            </tr>
+        </tbody>
+    </table>
 
     <br>
     <a href="javascript:history.back()">Torna indietro</a>

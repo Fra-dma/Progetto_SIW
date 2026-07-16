@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import it.uniroma3.siw.model.Partita;
+import it.uniroma3.siw.model.Squadra;
 import it.uniroma3.siw.model.Torneo;
 import it.uniroma3.siw.service.ServArbitro;
 import it.uniroma3.siw.service.ServPartita;
@@ -27,6 +28,11 @@ public class ControllerAdmin {
     private ServArbitro servArbitro;
     @Autowired
     private ServPartita servPartita;
+    
+    @GetMapping("/login")
+	public String showLoginForm() {
+	    return "login.html";
+	}
 
     @GetMapping("/admin/dashboard")
     public String showAdminDashboard(Model model) {
@@ -75,6 +81,31 @@ public class ControllerAdmin {
         servPartita.salvaPartita(partita);
         
         return "redirect:/admin/torneo/modifica/" + idTorneo;
+    }
+    	
+    @GetMapping("/admin/torneo/{idTorneo}/squadra/{idSquadra}/rimuovi")
+    public String rimuoviSquadraDaTorneo(@PathVariable("idTorneo") Long idTorneo, @PathVariable("idSquadra") Long idSquadra) {
+        
+        Torneo torneo = servTorneo.findById(idTorneo);
+        Squadra squadra = servSquadra.findById(idSquadra);
+        
+        if (torneo.getSquadrePartecipanti().contains(squadra)) {
+            torneo.getSquadrePartecipanti().remove(squadra);
+            servTorneo.salvaTorneo(torneo);
+        }
+        
+        return "redirect:/torneo/" + idTorneo + "/classifica";
+    }
+
+    @GetMapping("/admin/partita/{id}/rimuovi")
+    public String rimuoviPartita(@PathVariable("id") Long id) {
+        
+        Partita partita = servPartita.findById(id);
+        Long idTorneo = partita.getTorneo().getId();
+        
+        servPartita.deletePartita(partita);
+        
+        return "redirect:/torneo/" + idTorneo + "/partite";
     }
 	
 }

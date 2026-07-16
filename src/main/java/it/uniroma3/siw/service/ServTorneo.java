@@ -103,4 +103,55 @@ public class ServTorneo {
 
         return classificaFinale;
     }
+    
+    /**
+     * ESPERIMENTO PER L'ANALISI DELLE PRESTAZIONI
+     */
+    @Transactional(readOnly = true)
+    public void eseguiAnalisiSperimentale(Long idTorneo) {
+        System.out.println("=== INIZIO ANALISI SPERIMENTALE ===");
+
+        // APPROCCIO LAZY
+        long startLazy = System.currentTimeMillis();
+        
+        Torneo torneoLazy = this.repoTorneo.findById(idTorneo).orElse(null);
+        if (torneoLazy != null) {
+            int numeroPartite = torneoLazy.getPartite().size(); 
+        }
+        
+        long endLazy = System.currentTimeMillis();
+        long tempoLazy = endLazy - startLazy;
+
+
+        // APPROCCIO JOIN FETCH
+        long startEager = System.currentTimeMillis();
+        
+        Torneo torneoEager = this.repoTorneo.findByIdWithPartiteEager(idTorneo).orElse(null);
+        if (torneoEager != null) {
+            int numeroPartite = torneoEager.getPartite().size();
+        }
+        
+        long endEager = System.currentTimeMillis();
+        long tempoEager = endEager - startEager;
+
+
+        // APPROCCIO ENTITY GRAPH
+        long startGraph = System.currentTimeMillis();
+        
+        Torneo torneoGraph = this.repoTorneo.findTorneoById(idTorneo).orElse(null);
+        if (torneoGraph != null) {
+            int numeroPartite = torneoGraph.getPartite().size();
+        }
+        
+        long endGraph = System.currentTimeMillis();
+        long tempoGraph = endGraph - startGraph;
+
+
+        // STAMPA DEI RISULTATI
+        System.out.println("===================================");
+        System.out.println("Tempo LAZY (N+1 query): " + tempoLazy + " ms");
+        System.out.println("Tempo JOIN FETCH (Query manuale ottimizzata): " + tempoEager + " ms");
+        System.out.println("Tempo ENTITY GRAPH (Query automatica ottimizzata): " + tempoGraph + " ms");
+        System.out.println("===================================");
+    }
 }

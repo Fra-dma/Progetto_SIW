@@ -43,6 +43,9 @@ public class ControllerCommento {
         boolean isLogged = (principal != null);
         model.addAttribute("isLogged", isLogged);
         
+        String currentUser = isLogged ? principal.getName() : "";
+        model.addAttribute("currentUser", currentUser);
+        
         return "commenti_partita.html";
     }
     
@@ -62,5 +65,37 @@ public class ControllerCommento {
         servCommento.salvaCommento(nuovoCommento);
         
         return "redirect:/partita/" + idPartita + "/commenti"; 
+    }
+    
+    @GetMapping("/commento/{id}/modifica")
+    public String formModificaCommento(@PathVariable("id") Long id, Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        
+        Commento commento = servCommento.findById(id); 
+        
+        if (!commento.getAutore().getUsername().equals(principal.getName())) {
+            return "redirect:/partita/" + commento.getPartita().getId() + "/commenti";
+        }
+        
+        model.addAttribute("commento", commento);
+        return "modifica_commento.html";
+    }
+
+    @PostMapping("/commento/{id}/modifica")
+    public String salvaModificaCommento(@PathVariable("id") Long id, @RequestParam("testo") String testo, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        
+        Commento commento = servCommento.findById(id);
+        
+        if (commento.getAutore().getUsername().equals(principal.getName())) {
+            commento.setTesto(testo);
+            servCommento.salvaCommento(commento);
+        }
+        
+        return "redirect:/partita/" + commento.getPartita().getId() + "/commenti";
     }
 }
