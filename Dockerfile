@@ -1,5 +1,5 @@
-# Fase 1: Scarica Java 17 e Maven per "costruire" il progetto
-FROM maven:3.8.5-openjdk-17 AS build
+# Fase 1: Scarica Java 17 e Maven (versione aggiornata Eclipse Temurin) per costruire il progetto
+FROM maven:3.8.5-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Copia tutti i file del progetto dentro il server
@@ -8,8 +8,8 @@ COPY . .
 # Esegue il comando di build saltando i test per velocizzare
 RUN mvn clean package -DskipTests
 
-# Fase 2: Crea l'ambiente finale leggero per avviare l'app
-FROM openjdk:17-jdk-slim
+# Fase 2: Crea l'ambiente finale (versione aggiornata Eclipse Temurin) per avviare l'app
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
 # Prende il file .jar appena costruito nella Fase 1 e lo prepara per l'avvio
