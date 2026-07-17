@@ -45,5 +45,5 @@ build/
 target/
 build/
 
-# Ignora il file con le credenziali segrete
-src/main/resources/application.properties
+# Ignora la nostra cassaforte con le password locali e di OAuth
+src/main/resources/application-segreto.properties
