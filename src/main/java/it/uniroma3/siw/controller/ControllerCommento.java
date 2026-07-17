@@ -54,7 +54,7 @@ public class ControllerCommento {
     }
     
     // Metodo di supporto
-    // Questo metodo capisce se l'utente è standard
+    // Capisce se l'utente è standard
     // e ne estrae il nome in modo sicuro.
     private String estraiNomeUtente(Principal principal) {
         if (principal instanceof OAuth2AuthenticationToken) {

@@ -44,3 +44,6 @@ build/
 ### Maven / Gradle ###
 target/
 build/
+
+# Ignora il file con le credenziali segrete
+src/main/resources/application.properties
