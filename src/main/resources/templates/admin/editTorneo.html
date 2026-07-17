@@ -3,77 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <title>Modifica Torneo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-    <h1>Modifica Torneo: <span th:text="${torneo.nome}"></span></h1>
+    <div class="container" style="max-width: 800px; margin-top: 40px;">
 
-    <!-- 1. MODULO MODIFICA TORNEO -->
-    <form th:action="@{/admin/torneo/modifica}" th:object="${torneo}" method="POST">
-        <input type="hidden" th:field="*{id}" /> <!-- Fondamentale per far capire a Spring quale torneo aggiornare -->
-        
-        <label>Nome:</label> <input type="text" th:field="*{nome}" required />
-        <br>
-        <label>Anno:</label> <input type="number" th:field="*{anno}" required />
-        <br>
-        <label>Descrizione:</label> <textarea th:field="*{descrizione}"></textarea>
-        
-        <h3>Seleziona Squadre Partecipanti:</h3>
-        <div th:each="squadra : ${tutteLeSquadre}">
-            <input type="checkbox" th:field="*{squadrePartecipanti}" th:value="${squadra.id}" />
-            <label th:text="${squadra.nome}"></label>
+        <h1 class="text-center" style="color: #2c3e50; margin-bottom: 30px;">
+            Modifica Torneo: <span th:text="${torneo.nome}">Nome</span>
+        </h1>
+
+        <!-- Contenitore Flexbox per ordinare gli oggetti -->
+        <div style="display: flex; flex-direction: column; gap: 30px;">
+
+            <!-- Form modifica torneo -->
+            <form th:action="@{/admin/torneo/modifica}" th:object="${torneo}" method="POST" style="display: contents;">
+                <input type="hidden" th:field="*{id}" />
+                
+                <!-- Dati del torneo -->
+                <div class="card-torneo" style="order: 1; border-left-color: #007BFF; background-color: #f8f9fa;">
+                    <h3 style="margin-top: 0; color: #007BFF; margin-bottom: 20px;">1. Dati Principali</h3>
+                    
+                    <div class="form-group">
+                        <label>Nome:</label> 
+                        <input type="text" th:field="*{nome}" class="form-control" required />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Anno:</label> 
+                        <input type="number" th:field="*{anno}" class="form-control" required />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Descrizione:</label> 
+                        <textarea th:field="*{descrizione}" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Squadre e Salvataggio -->
+                <div class="card-torneo" style="order: 3; border-left-color: #28a745; background-color: #f8f9fa;">
+                    <h3 style="margin-top: 0; color: #28a745; margin-bottom: 20px;">3. Squadre Partecipanti</h3>
+                    
+                    <div class="form-group">
+                        <!-- Riquadro con barra di scorrimento -->
+                        <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px; padding: 15px; background-color: #ffffff;">
+                            
+                            <div th:each="squadra : ${tutteLeSquadre}" style="display: flex; align-items: center; margin-bottom: 8px;">
+                                <input type="checkbox" th:field="*{squadrePartecipanti}" th:value="${squadra.id}" style="margin-right: 10px; margin-top: 0; transform: scale(1.2);" />
+                                <label th:text="${squadra.nome}" style="cursor: pointer; color: #333; margin: 0; font-weight: normal;"></label>
+                            </div>
+                            
+                            <!-- Messaggio se non ci sono squadre nel sistema -->
+                            <p th:if="${#lists.isEmpty(tutteLeSquadre)}" style="color: #777; font-style: italic; margin: 0; text-align: center;">
+                                Nessuna squadra disponibile.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px; font-size: 16px; background-color: #28a745; border: none;">
+                        Salva Modifiche Torneo
+                    </button>
+                </div>
+            </form>
+
+            <!-- Form Aggiungi partita -->
+            <form th:action="@{/admin/torneo/{id}/aggiungiPartita(id=${torneo.id})}" th:object="${nuovaPartita}" method="POST" style="display: contents;">
+                
+                <!-- Blocco nuova partita -->
+                <div class="card-torneo" style="order: 2; border-left-color: #fd7e14; background-color: #ffffff;">
+                    <h3 style="margin-top: 0; color: #fd7e14; margin-bottom: 20px;">2. Aggiungi Nuova Partita</h3>
+                    
+                    <!-- Griglia CSS per tenere ordinati i campi -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        
+                        <div class="form-group">
+                            <label>Data e Ora:</label> 
+                            <input type="datetime-local" th:field="*{dataEOra}" class="form-control" required />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Luogo:</label> 
+                            <input type="text" th:field="*{luogo}" class="form-control" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Squadra Casa:</label>
+                            <select name="squadraCasaId" class="form-control" required>
+                                <option th:each="s : ${tutteLeSquadre}" th:value="${s.id}" th:text="${s.nome}"></option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Squadra Ospite:</label>
+                            <select name="squadraOspiteId" class="form-control" required>
+                                <option th:each="s : ${tutteLeSquadre}" th:value="${s.id}" th:text="${s.nome}"></option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Arbitro:</label>
+                            <select name="arbitroId" class="form-control" required>
+                                <option th:each="a : ${tuttiGliArbitri}" th:value="${a.id}" th:text="${a.nome}"></option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Stato Partita:</label>
+                            <select th:field="*{stato}" class="form-control">
+                                <option value="PLAYED">PLAYED</option>
+                                <option value="SCHEDULED">SCHEDULED</option>
+                            </select>
+                        </div>
+
+                        <!-- Sotto-griglia per i goal -->
+                        <div style="display: flex; gap: 10px;">
+                            <div class="form-group" style="width: 50%;">
+                                <label>Goal (Casa):</label> 
+                                <input type="number" th:field="*{goalsHome}" class="form-control" min="0" />
+                            </div>
+                            <div class="form-group" style="width: 50%;">
+                                <label>Goal (Ospite):</label> 
+                                <input type="number" th:field="*{goalsAway}" class="form-control" min="0" />
+                            </div>
+                        </div>
+                        
+                    </div> <!-- Fine Griglia -->
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 25px; font-size: 16px; background-color: #fd7e14; border: none;">
+                        Crea Partita
+                    </button>
+                    
+                </div>
+            </form>
+
+        </div> <!-- Fine Contenitore -->
+
+        <!-- Link per tornare alla Dashboard -->
+        <div class="text-center" style="margin-top: 40px;">
+            <a th:href="@{/admin/dashboard}" style="color: #555; text-decoration: none;">&larr; Torna alla Dashboard</a>
         </div>
-        
-        <button type="submit">Salva Modifiche Torneo</button>
-    </form>
 
-    <hr>
-
-    <!-- 2. MODULO AGGIUNGI PARTITA -->
-    <h3>Aggiungi Nuova Partita</h3>
-    <form th:action="@{/admin/torneo/{id}/aggiungiPartita(id=${torneo.id})}" th:object="${nuovaPartita}" method="POST">
-        
-        <label>Data e Ora:</label> 
-        <input type="datetime-local" th:field="*{dataEOra}" required />
-        <br>
-        <label>Luogo:</label> 
-        <input type="text" th:field="*{luogo}" required />
-        <br>
-        <label>Squadra Casa:</label>
-        <select name="squadraCasaId" required>
-            <option th:each="s : ${tutteLeSquadre}" th:value="${s.id}" th:text="${s.nome}"></option>
-        </select>
-        <br>
-        <label>Squadra Ospite:</label>
-        <select name="squadraOspiteId" required>
-            <option th:each="s : ${tutteLeSquadre}" th:value="${s.id}" th:text="${s.nome}"></option>
-        </select>
-        <br>
-        <label>Arbitro:</label>
-        <select name="arbitroId" required>
-            <option th:each="a : ${tuttiGliArbitri}" th:value="${a.id}" th:text="${a.nome}"></option>
-        </select>
-        <br>
-		<label>Risultato (Casa):</label> 
-				<input type="number" th:field="*{goalsHome}" min="0" />
-				<br>
-
-				<label>Risultato (Ospite):</label> 
-				<input type="number" th:field="*{goalsAway}" min="0" />
-				<br>
-
-				<label>Stato Partita:</label>
-				<select th:field="*{stato}">
-				    <option value="PLAYED">Da giocare</option>
-				    <option value="SCHEDULED">In corso</option>
-				</select>
-				<br>
-        <button type="submit">Crea Partita</button>
-		
-    </form>
-
-    <br>
-    <a th:href="@{/admin/dashboard}">Torna alla Dashboard</a>
+    </div>
 
 </body>
 </html>

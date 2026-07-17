@@ -3,22 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Seleziona Torneo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-    <h1>Quale torneo vuoi modificare?</h1>
-    <p>Clicca sul nome del torneo per avviare la modifica:</p>
+    <!-- Contenitore -->
+    <div class="container" style="max-width: 600px; margin-top: 50px;">
 
-    <ul>
-        <!-- Ciclo che crea una riga per ogni torneo trovato nel database -->
-        <li th:each="torneo : ${elencoTornei}">
-            <!-- Il link punta a /admin/torneo/modifica/ e aggiunge l'ID specifico -->
-            <a th:href="@{/admin/torneo/modifica/{id}(id=${torneo.id})}" th:text="${torneo.nome}">Nome Torneo</a>
-        </li>
-    </ul>
+        <h1 class="text-center" style="color: #2c3e50; margin-bottom: 10px;">Seleziona un Torneo</h1>
+        <p class="text-center" style="color: #555; margin-bottom: 30px;">Clicca sul nome del torneo che desideri modificare:</p>
 
-    <br>
-    <a th:href="@{/admin/dashboard}">Torna alla Dashboard</a>
+        <!-- Lista dei tornei modificabili -->
+        <ul class="lista-tornei">
+            <!-- Ciclo che crea una card per ogni torneo -->
+            <li th:each="torneo : ${elencoTornei}" class="card-torneo" style="text-align: center; padding: 15px; border-left: 5px solid #007BFF;">
+                
+                <!-- Blocco cliccabile -->
+                <a th:href="@{/admin/torneo/modifica/{id}(id=${torneo.id})}" 
+                   th:text="${torneo.nome}" 
+                   style="font-size: 18px; font-weight: bold; text-decoration: none; color: #007BFF; display: block; cursor: pointer;">
+                   Nome Torneo
+                </a>
+                
+            </li>
+        </ul>
+
+        <!-- Messaggio mostrato solo se non ci sono tornei nel database -->
+        <p th:if="${#lists.isEmpty(elencoTornei)}" class="text-center" style="color: #777; font-style: italic; margin-top: 20px;">
+            Non ci sono ancora tornei registrati nel sistema.
+        </p>
+
+        <!-- Link per annullare e tornare alla Dashboard -->
+        <div class="text-center" style="margin-top: 40px;">
+            <a th:href="@{/admin/dashboard}" style="color: #555; text-decoration: none;">&larr; Torna alla Dashboard</a>
+        </div>
+
+    </div>
 
 </body>
 </html>

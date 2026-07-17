@@ -3,37 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <title>Modifica Commento</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-    <h1>Modifica il tuo commento</h1>
+    <div class="container" style="max-width: 600px; margin-top: 40px;">
+
+        <h1 class="text-center" style="margin-bottom: 30px; color: #2c3e50;">Modifica il tuo commento</h1>
+        
+        <!-- Modulo -->
+        <div class="card-torneo" style="background-color: #f8f9fa;">
+            <form th:action="@{/commento/{id}/modifica(id=${commento.id})}" method="POST" enctype="multipart/form-data">
+                
+                <!-- Campo di testo -->
+                <div class="form-group">
+                     <label for="testoModifica">Testo:</label>
+                     <textarea id="testoModifica" name="testo" class="form-control" rows="5" required 
+                               maxlength="1000" 
+                               oninput="controllaLunghezza(this, 'erroreModificaCommento')" 
+                               th:text="${commento.testo}"></textarea>
+                            
+                     <!-- Messaggio di errore per il limite di caratteri -->
+                     <p id="erroreModificaCommento" style="color: #dc3545; font-size: 14px; font-weight: bold; margin-top: 5px; display: none;">
+                         Attenzione: hai raggiunto il limite massimo di 1000 caratteri!
+                     </p>
+                </div>
+                
+                <!-- Anteprima dell'immagine esistente -->
+				<div th:if="${commento.immagineBase64 != null}" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+				     <p style="margin: 0 0 10px 0; font-weight: bold; color: #555;">Immagine attuale:</p>
+				     <img th:src="|data:image/jpeg;base64,${commento.immagineBase64}|" 
+				     style="max-width: 100%; max-height: 250px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" 
+				     alt="Immagine allegata al commento" />
+			    </div>
+
+                <!-- Campo per inserire una nuova immagine -->
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="fileImmagine">Carica una nuova immagine per sostituire la precedente (opzionale):</label>
+                    <input type="file" id="fileImmagine" name="fileImmagine" class="form-control" accept="image/png, image/jpeg" style="padding: 7px;"/>
+                </div>
+                
+                <!-- Bottone di invio -->
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 15px;">Salva Modifiche</button>
+            </form>
+        </div>
+
+        <!-- Link per annullare e tornare indietro -->
+        <div class="text-center" style="margin-top: 30px;">
+            <a th:href="@{/partita/{id}/commenti(id=${commento.partita.id})}" style="color: #555; text-decoration: none;">&larr; Annulla e torna ai commenti</a>
+        </div>
+
+    </div>
     
-    <form th:action="@{/commento/{id}/modifica(id=${commento.id})}" method="POST" enctype="multipart/form-data">
-        
-		<!-- MOSTRA IL TESTO -->
-        <div>
-            <label>Testo:</label><br>
-            <textarea name="testo" rows="4" cols="50" required th:text="${commento.testo}"></textarea>
-        </div>
-        
-        <!-- MOSTRA L'IMMAGINE ATTUALE SE ESISTE -->
-        <div th:if="${commento.immagineBase64 != null}" style="margin-top: 15px; margin-bottom: 15px;">
-            <p style="margin: 0 0 5px 0;">Immagine attuale:</p>
-            <img th:src="@{'data:image/jpeg;base64,' + ${commento.immagineBase64}}" style="max-width: 200px; border-radius: 8px;" />
-        </div>
-
-        <!-- CAMPO PER CARICARE UNA NUOVA IMMAGINE -->
-        <div style="margin-top: 10px;">
-            <label>Carica una nuova immagine per sostituire la precedente (opzionale):</label><br>
-            <input type="file" name="fileImmagine" accept="image/png, image/jpeg" />
-        </div>
-        <br>
-        
-        <button type="submit">Salva Modifiche</button>
-    </form>
-
-    <br>
-    <a th:href="@{/partita/{id}/commenti(id=${commento.partita.id})}">Annulla e torna ai commenti</a>
+    <!-- Script JavaScript per il controllo della lunghezza -->
+    <script>
+        function controllaLunghezza(textarea, idMessaggio) {
+            var messaggio = document.getElementById(idMessaggio);
+            if (textarea.value.length >= 1000) {
+                messaggio.style.display = "block"; 
+            } else {
+                messaggio.style.display = "none";  
+            }
+        }
+    </script>
 
 </body>
 </html>

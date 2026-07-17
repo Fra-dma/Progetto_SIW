@@ -2,7 +2,6 @@ package it.uniroma3.siw.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,14 +34,20 @@ public class AuthConfig {
                 .anyRequest().authenticated()
             )
             
-            // CONFIGURAZIONE DEL LOGIN
+            // LOGIN
             .formLogin((form) -> form
                 .loginPage("/login")
                 .permitAll()
                 .defaultSuccessUrl("/tornei", true)
             )
             
-            // CONFIGURAZIONE DEL LOGOUT
+            // OAuth
+            .oauth2Login((oauth2) -> oauth2
+                .loginPage("/login")
+                .defaultSuccessUrl("/tornei", true)
+            )
+            
+            // LOGOUT
             .logout((logout) -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/tornei")

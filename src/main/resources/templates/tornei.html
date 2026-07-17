@@ -3,51 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Elenco Tornei</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 	
-	<!-- Menu in alto a destra -->
-		<div style="text-align: right; margin: 10px; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
-			
-			<a th:if="${isAdmin}" th:href="@{/admin/dashboard}" style="color: red; font-weight: bold; text-decoration: none;">Dashboard Admin</a>
-		    
-		    <a th:if="${!isLogged}" th:href="@{/login}" style="font-weight: bold; text-decoration: none;">Login</a>
-	        
-	        <form th:if="${isLogged}" th:action="@{/logout}" method="post" style="margin: 0;">
-	        <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-	        Logout
-	        </button>
-	        </form>
-		</div>
-
-    <h1>Tutti i Tornei Disponibili</h1>
-
-    <div style="margin-bottom: 25px;">
-        <a th:href="@{/ricerca_squadre}" 
-           style="padding: 10px 15px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
-           Cerca una Squadra
-        </a>
+    <!-- Menu in alto -->
+    <div class="navbar">
+        <a th:if="${isAdmin}" th:href="@{/admin/dashboard}" class="link-admin">Dashboard Admin</a>
+        
+        <a th:if="${!isLogged}" th:href="@{/login}">Login</a>
+        
+        <form th:if="${isLogged}" th:action="@{/logout}" method="post" style="margin: 0;">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
     </div>
 
-    <ul>
-        <li th:each="torneo : ${elencoTornei}">
-			
-			<a th:href="@{/torneo/{id}/classifica(id=${torneo.id})}">
-			    <strong th:text="${torneo.nome}">Nome Torneo</strong>
-			</a> -
-			
-            Anno: <span th:text="${torneo.anno}">2000</span>
-			
-			<br>
-			<i>Descrizione: <span th:text="${torneo.descrizione}">Qui andrà la descrizione del torneo...</span></i>
-			<br>
-			<a th:href="@{/torneo/{id}/partite(id=${torneo.id})}">
-				Visualizza partite del torneo
-			</a>
-			<br><br>
-						
-        </li>
-    </ul>
+    <!-- Contenitore centrale per tenere tutto in ordine -->
+    <div class="container">
+        
+        <h1>Tutti i Tornei Disponibili</h1>
+
+        <div class="barra-azioni">
+            <a th:href="@{/ricerca_squadre}" class="btn btn-primary">
+               Cerca una Squadra
+            </a>
+        </div>
+
+        <!-- Elenco trasformato in una griglia di schede -->
+        <ul class="lista-tornei">
+            <li th:each="torneo : ${elencoTornei}" class="card-torneo">
+                
+                <h3>
+                    <a th:href="@{/torneo/{id}/classifica(id=${torneo.id})}">
+                        <span th:text="${torneo.nome}">Nome Torneo</span>
+                    </a>
+                </h3>
+                
+                <p><strong>Anno:</strong> <span th:text="${torneo.anno}">2000</span></p>
+                <p><i><span th:text="${torneo.descrizione}">Qui andrà la descrizione del torneo...</span></i></p>
+                
+                <a th:href="@{/torneo/{id}/partite(id=${torneo.id})}" class="link-partite">
+                    Visualizza partite del torneo &rarr;
+                </a>
+                            
+            </li>
+        </ul>
+        
+    </div>
 
 </body>
-</html>	
+</html>

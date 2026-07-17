@@ -3,27 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Pannello Amministratore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-    <h1>Benvenuto nel Pannello di Controllo</h1>
-    <p>Scegli un'operazione da eseguire:</p>
+    <!-- Contenitore centrale -->
+    <div class="container" style="max-width: 600px; margin-top: 50px;">
 
-    <ul>
-        <li>
-            <a th:href="@{/admin/torneo/nuovo}">Crea un nuovo Torneo</a>
-        </li>
-        <li>	
-            <a th:href="@{/admin/squadra/nuova}">Aggiungi una nuova Squadra</a>
-        </li>
-        <!-- Nuovo link per la selezione del torneo da modificare -->
-        <li>	
-            <a th:href="@{/admin/tornei/selezione}">Modifica tornei</a>
-        </li>
-    </ul>
+        <!-- Titolo evidenziato in rosso scuro -->
+        <h1 class="text-center" style="color: #dc3545; margin-bottom: 10px;">Pannello di Controllo Admin</h1>
+        <p class="text-center" style="color: #555; margin-bottom: 30px;">Scegli un'operazione da eseguire:</p>
 
-    <br>
-    <a href="/tornei">Torna alla Homepage pubblica</a>
+        <!-- Card principale che racchiude tutte le azioni dell'amministratore -->
+        <div class="card-torneo" style="background-color: #ffffff; border-left: 5px solid #dc3545; padding: 30px;">
+            
+            <!-- flexbox per impilare i bottoni -->
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                
+                <a th:href="@{/admin/torneo/nuovo}" class="btn btn-primary" style="text-align: center; padding: 15px; font-size: 16px;">
+                    Crea un nuovo Torneo
+                </a>
+                
+                <a th:href="@{/admin/squadra/nuova}" class="btn btn-primary" style="text-align: center; padding: 15px; font-size: 16px;">
+                    Aggiungi una nuova Squadra
+                </a>
+                
+                <a th:href="@{/admin/tornei/selezione}" class="btn btn-primary" style="text-align: center; padding: 15px; font-size: 16px;">
+                    Modifica tornei esistenti
+                </a>
+                
+            </div>
+
+        </div>
+
+        <!-- Link per tornare indietro -->
+        <div class="text-center" style="margin-top: 30px;">
+            <a th:href="@{/tornei}" style="color: #555; text-decoration: none;">&larr; Torna alla Homepage pubblica</a>
+        </div>
+
+    </div>
 
 </body>
 </html>

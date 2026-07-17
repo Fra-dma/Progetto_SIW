@@ -3,69 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title>Commenti Partita</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-    <h1>Commenti della partita</h1>
-    
-    <div>
-        <strong th:text="${partita.squadraCasa.nome}">Squadra 1</strong> 
-        - 
-        <strong th:text="${partita.squadraOspite.nome}">Squadra 2</strong>
-    </div>
-    
-    <hr>
+    <div class="container" style="max-width: 800px; margin-top: 40px;">
 
-    <h2>Tutti i commenti:</h2>
-    
-    <ul>
-        <li th:each="commento : ${commenti}" style="margin-bottom: 20px;">
-            <strong th:text="${commento.autore.username}">Username</strong>: 
-            <span th:text="${commento.testo}">Testo del commento...</span>
-			
-            <a th:if="${commento.autore.username == currentUser}" th:href="@{/commento/{id}/modifica(id=${commento.id})}"> 
-                [Modifica]
-			</a>
+        <h1 class="text-center" style="margin-bottom: 30px;">
+            Commenti per <span th:text="${partita.squadraCasa.nome} + ' vs ' + ${partita.squadraOspite.nome}">Partita</span>
+        </h1>
 
-            <!-- MOSTRA L'IMMAGINE SE PRESENTE -->
-            <div th:if="${commento.immagineBase64 != null}" style="margin-top: 10px;">
-                <img th:src="@{'data:image/jpeg;base64,' + ${commento.immagineBase64}}" 
-                     style="max-width: 300px; border-radius: 8px;" alt="Immagine allegata al commento"/>
-            </div>
-        </li>
-    </ul>
-	
-	<div th:if="${isLogged}">
-        <h3>Lascia un commento</h3>
+        <!-- Lista dei commenti -->
+        <div th:if="${commenti == null or commenti.isEmpty()}" class="text-center" style="color: #777; font-style: italic; margin-bottom: 30px;">
+            Ancora nessun commento per questa partita. Scrivi il primo!
+        </div>
+
+        <!-- Griglia per commenti verticali -->
+        <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px;">
             
-        <!-- AGGIUNTO enctype="multipart/form-data" FONDAMENTALE PER I FILE -->
-        <form th:action="@{/partita/{id}/commento(id=${partita.id})}" method="POST" enctype="multipart/form-data">
-            <div>
-                <textarea name="testo" rows="4" cols="50" required placeholder="Scrivi qui il tuo commento..."></textarea>
+            <!-- Card per ogni commento -->
+            <div th:each="commento : ${commenti}" class="card-torneo">
+                
+                <h4 style="margin-top: 0; color: #007BFF;">
+                    <!-- "?" per evitare il crash del sistema nel caso manchi l'username -->
+                    <span th:text="${commento.autore?.username ?: 'Utente Anonimo'}">Autore</span>
+                </h4>
+                
+                <p th:text="${commento.testo}" style="line-height: 1.6;">Testo del commento...</p>
+                
+                <!-- Gestione Immagine: mostrata solo se esiste -->
+				<div th:if="${commento.immagineBase64 != null}" style="margin-top: 15px;">
+				     <img th:src="|data:image/jpeg;base64,${commento.immagineBase64}|" 
+				     style="max-width: 100%; max-height: 300px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" 
+				     alt="Immagine allegata al commento"/>
+				</div>
+
+                <!-- Pulsante Modifica: Visibile SOLO se l'utente loggato è l'autore del commento -->
+                <div th:if="${isLogged and currentUser == commento.autore?.username}" style="margin-top: 15px; text-align: right;">
+                    <a th:href="@{/commento/{id}/modifica(id=${commento.id})}" class="btn btn-primary btn-sm">
+                        Modifica
+                    </a>
+                </div>
             </div>
             
-            <!-- AGGIUNTO CAMPO PER CARICARE IL FILE -->
-            <div style="margin-top: 10px;">
-                <label>Allega un'immagine (opzionale):</label><br>
-                <input type="file" name="fileImmagine" accept="image/png, image/jpeg" />
-            </div>
-            <br>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 30px;">
+
+        <!-- Inserimento nuovo commento -->
+        <h3 class="text-center" style="margin-bottom: 20px;">Aggiungi un commento</h3>
+
+        <!-- Caso A: Utente loggato, mostra tutto -->
+        <div th:if="${isLogged}" class="card-torneo" style="background-color: #f8f9fa;">
             
-            <button type="submit">Pubblica Commento</button>
-        </form>
+            <!-- Serve per inviare l'immagine (imortante) -->
+            <form th:action="@{/partita/{id}/commento(id=${partita.id})}" method="POST" enctype="multipart/form-data">
+                
+                <div class="form-group">
+                    <label for="testoCommento">Il tuo messaggio:</label>
+                    <textarea id="testoCommento" name="testo" class="form-control" rows="4" required 
+                              placeholder="Scrivi qui il tuo commento..." 
+                              maxlength="1000" 
+                              oninput="controllaLunghezza(this, 'erroreNuovoCommento')"></textarea>
+                              
+                    <!-- Messaggio di errore nascosto per i 1000 caratteri -->
+                    <p id="erroreNuovoCommento" style="color: #dc3545; font-size: 14px; font-weight: bold; margin-top: 5px; display: none;">
+                        Attenzione: hai raggiunto il limite massimo di 1000 caratteri!
+                    </p>
+                </div>
+                
+				<!-- Sezione per immagini -->
+                <div class="form-group">
+                    <label for="fileImmagine">Allega un'immagine (opzionale):</label>
+                    <input type="file" id="fileImmagine" name="fileImmagine" class="form-control" accept="image/png, image/jpeg" style="padding: 7px;"/>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Pubblica Commento</button>
+            </form>
+        </div>
+
+        <!-- Caso B: Utente non loggato, mostra avviso -->
+        <div th:unless="${isLogged}" class="text-center card-torneo" style="background-color: #f8f9fa; border-left-color: #dc3545;">
+            <p style="margin-bottom: 15px; font-weight: bold; color: #555;">Devi effettuare l'accesso per poter commentare.</p>
+            <a th:href="@{/login}" class="btn btn-primary">Vai al Login</a>
+        </div>
+
+        <!-- Link per tornare indietro -->
+        <div class="text-center" style="margin-top: 30px;">
+            <a th:href="@{/torneo/{id}/partite(id=${partita.torneo.id})}" style="color: #555; text-decoration: none;">&larr; Torna alle partite</a>
+        </div>
+
     </div>
 
-    <!-- th:unless è il contrario di th:if (se non è loggato) -->
-    <div th:unless="${isLogged}">
-        <p>Devi <a th:href="@{/login}">accedere</a> per poter lasciare un commento.</p>
-    </div>
-
-    <div th:if="${commenti.isEmpty()}">
-        <p>Non ci sono ancora commenti per questa partita. Sii il primo a scriverne uno!</p>
-    </div>
-
-    <br>
-    <a href="/tornei">Torna indietro</a>
+    <!-- Script JavaScript per il limite di caratteri -->
+    <script>
+        function controllaLunghezza(textarea, idMessaggio) {
+            var messaggio = document.getElementById(idMessaggio);
+            if (textarea.value.length >= 1000) {
+                messaggio.style.display = "block";
+            } else {
+                messaggio.style.display = "none";
+            }
+        }
+    </script>
 
 </body>
 </html>

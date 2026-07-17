@@ -3,43 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Classifica Torneo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-    <h1>Classifica del Torneo</h1>
+    <!-- Contenitore centrale -->
+    <div class="container">
+        
+        <!-- Sfrutta la variabile torneo passata dal Controller -->
+        <h1 class="text-center">Classifica: <span th:text="${torneo.nome}">Nome Torneo</span></h1>
 
-    <table border="1">
-        <thead>
-            <tr>
-				<!-- Info Squadra -->
-                <th>Posizione</th>
-                <th>Squadra</th>
-                <th>Punti</th>
-                <!-- Se non è ADMIN la nascondo-->
-                <th th:if="${isAdmin}">Azione</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="riga, iterStat : ${classifica}">	
-                <td th:text="${iterStat.count}">1</td>
-                <td>
-                    <a th:href="@{/squadra/{id}(id=${riga.squadra.id})}" th:text="${riga.squadra.nome}">Nome Squadra</a>
-                </td>
-                <td th:text="${riga.punti}">0</td>
-                
-                <!-- Se non è ADMIN la nascondo -->
-                <td th:if="${isAdmin}">
-                    <a th:href="@{/admin/torneo/{idTorneo}/squadra/{idSquadra}/rimuovi(idTorneo=${torneo.id}, idSquadra=${riga.squadra.id})}" 
-                       style="color: red;">
-                       [Rimuovi]
-                    </a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- Aggiunta la classe .table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Posizione</th>
+                    <th>Squadra</th>
+                    <th>Punti</th>
+                    <!-- Controllo Admin -->
+                    <th th:if="${isAdmin}">Azione</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="riga, iterStat : ${classifica}">    
+                    <td th:text="${iterStat.count}">1</td>
+                    <td>
+                        <a th:href="@{/squadra/{id}(id=${riga.squadra.id})}" th:text="${riga.squadra.nome}">Nome Squadra</a>
+                    </td>
+                    <td th:text="${riga.punti}">0</td>
+                    
+                    <!-- Controllo Admin, ora usa le classi dei bottoni -->
+                    <td th:if="${isAdmin}">
+                        <a th:href="@{/admin/torneo/{idTorneo}/squadra/{idSquadra}/rimuovi(idTorneo=${torneo.id}, idSquadra=${riga.squadra.id})}" 
+                           class="btn btn-danger btn-sm">
+                           Rimuovi
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    <br>
-    <a th:href="@{/tornei}">Torna alla lista dei tornei</a>
+        <!-- Link per tornare indietro -->
+        <div class="text-center" style="margin-top: 30px;">
+            <a th:href="@{/tornei}" style="color: #555; text-decoration: none;">&larr; Torna alla lista dei tornei</a>
+        </div>
+
+    </div>
 
 </body>
 </html>

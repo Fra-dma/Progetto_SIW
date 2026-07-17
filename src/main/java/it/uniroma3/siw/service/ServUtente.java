@@ -16,5 +16,10 @@ public class ServUtente {
     public Utente findByUsername(String username) {
         return repoUtente.findByUsername(username);
     }
+    
+    @Transactional
+    public Utente salvaUtente(Utente utente) {
+        return repoUtente.save(utente);
+    }
 
 }

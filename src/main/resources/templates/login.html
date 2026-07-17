@@ -3,36 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Login Utente</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-    <h1>Accedi al tuo account</h1>
+    <!-- Container da riquadro centrale -->
+    <div class="container" style="max-width: 400px; margin-top: 50px;">
+        
+        <h1 class="text-center">Accedi al tuo account</h1>
 
-    <div th:if="${param.error}">
-        <p style="color: red;">Username o password non validi. Riprova.</p>
+        <!-- Messaggio di errore -->
+        <div th:if="${param.error}" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; border: 1px solid #f5c6cb;">
+            Username o password non validi. Riprova.
+        </div>
+
+        <!-- Card bianca già usata nella home dei tornei -->
+        <div class="card-torneo">
+            <form th:action="@{/login}" method="POST">
+                
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" class="form-control" required />
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control" required />
+                </div>
+                
+                <!-- Pulsante largo quanto tutto il riquadro -->
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Entra</button>
+            </form>
+            
+            <!-- Divisore sottile e grigio -->
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+            
+            <h3 class="text-center" style="font-size: 16px; margin-bottom: 15px;">Oppure entra con un clic:</h3>
+            
+            <!-- Pulsante per il login con GitHub -->
+            <a th:href="@{/oauth2/authorization/github}" class="btn btn-github">
+               Accedi con GitHub
+            </a>
+        </div>
+
+        <!-- Link per tornare indietro -->
+        <div class="text-center" style="margin-top: 20px;">
+            <a th:href="@{/tornei}" style="color: #555; text-decoration: none;">&larr; Torna alla Homepage</a>
+        </div>
+
     </div>
-
-    <form th:action="@{/login}" method="POST">
-        
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required />
-        </div>
-        
-        <br>
-        
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required />
-        </div>
-        
-        <br>
-        
-        <button type="submit">Entra</button>
-    </form>
-
-    <br>
-    <a href="/tornei">Torna alla Homepage</a>
 
 </body>
 </html>

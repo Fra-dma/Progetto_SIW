@@ -3,29 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Dettaglio Squadra</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-    <h1 th:text="${squadra.nome}">Nome Squadra</h1>
+    <!-- Contenitore centrale -->
+    <div class="container">
 
-    <div>
-        <strong>Città:</strong> <span th:text="${squadra.citta}">Roma</span><br>
-        <strong>Anno di fondazione:</strong> <span th:text="${squadra.annoDiFondazione}">2000</span>
+        <!-- Titolo principale -->
+        <h1 class="text-center" th:text="${squadra.nome}">Nome Squadra</h1>
+
+        <!-- Scheda centrale con i dettagli della squadra -->
+        <div class="card-torneo text-center" style="max-width: 500px; margin: 0 auto 40px auto;">
+            <p style="font-size: 18px; margin: 5px 0;">
+                <strong>Città:</strong> <span th:text="${squadra.citta}">Roma</span>
+            </p>
+            <p style="font-size: 18px; margin: 5px 0;">
+                <strong>Anno di fondazione:</strong> <span th:text="${squadra.annoDiFondazione}">2000</span>
+            </p>
+        </div>
+
+        <h2 class="text-center" style="margin-bottom: 20px; color: #2c3e50;">Rosa dei Giocatori</h2>
+
+        <!-- Lista dei giocatori -->
+        <ul class="griglia-giocatori">
+            <li th:each="giocatore : ${giocatori}" class="card-giocatore">
+                <h4>
+                    <span th:text="${giocatore.nome}">Mario</span> 
+                    <span th:text="${giocatore.cognome}">Rossi</span>
+                </h4>
+                <p>
+                    Ruolo: <strong th:text="${giocatore.ruolo}">Attaccante</strong>
+                </p>
+            </li>
+        </ul>
+
+        <!-- Messaggio mostrato solo se la lista dei giocatori è vuota -->
+        <div th:if="${giocatori == null or giocatori.isEmpty()}" style="text-align: center; color: #777; font-style: italic; margin-top: 20px;">
+            Nessun giocatore attualmente registrato in questa squadra.
+        </div>
+
+        <!-- Tasto per tornare indietro -->
+        <div class="text-center" style="margin-top: 40px;">
+            <a href="javascript:history.back()" style="color: #555; text-decoration: none;">&larr; Torna indietro</a>
+        </div>
+
     </div>
-
-    <hr>
-
-    <h2>Rosa dei Giocatori</h2>
-    <ul>
-        <li th:each="giocatore : ${giocatori}">
-            <span th:text="${giocatore.nome}">Mario</span> 
-            <span th:text="${giocatore.cognome}">Rossi</span> 
-            - Ruolo: <i th:text="${giocatore.ruolo}">Attaccante</i>
-        </li>
-    </ul>
-
-    <br>
-    <a href="/tornei">Torna indietro</a>
 
 </body>
 </html>

@@ -3,52 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <title>Calendario Partite</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-    <h1>Elenco delle Partite</h1>
+    <!-- Contenitore centrale -->
+    <div class="container" style="max-width: 1000px;">
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Luogo</th>
-                <th>Stato</th>
-                <th>Squadra in Casa</th>
-                <th>Risultato</th>
-                <th>Squadra in Trasferta</th>
-                <th>Azione</th> 
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="partita : ${elencoPartite}">
-                
-                <td th:text="${partita.luogo}">Stadio</td>
-                <td th:text="${partita.stato}">Stato</td>
-                <td th:text="${partita.squadraCasa.nome}">Squadra 1</td>
-                <td>
-                    <span th:text="${partita.goalsHome}">0</span> 
-                    - 
-                    <span th:text="${partita.goalsAway}">0</span>
-                </td>
-                <td th:text="${partita.squadraOspite.nome}">Squadra 2</td>
-               
-                <!-- Entrambi i link di azione sono raggruppati in questa singola cella -->
-                <td>
-                    <a th:href="@{/partita/{id}/commenti(id=${partita.id})}">Vedi Commenti</a>
+        <h1 class="text-center">Elenco delle Partite</h1>
+
+        <!-- Classe .table per le tabelle -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Luogo</th>
+                    <th>Stato</th>
+                    <th style="text-align: right;">Squadra in Casa</th>
+                    <th style="text-align: center;">Risultato</th>
+                    <th>Squadra in Trasferta</th>
+                    <th>Azione</th> 
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="partita : ${elencoPartite}">
                     
-                    <a th:if="${isAdmin}" 
-                       th:href="@{/admin/partita/{id}/rimuovi(id=${partita.id})}" 
-                       style="color: red; margin-left: 15px;">
-                       [Rimuovi]
-                    </a>
-                </td>
-                
-            </tr>
-        </tbody>
-    </table>
+                    <td th:text="${partita.luogo}">Stadio</td>
+                    
+                    <!-- Stato partite-->
+                    <td>
+                        <span th:text="${partita.stato}" style="background-color: #e9ecef; padding: 4px 8px; border-radius: 4px; font-size: 14px; font-weight: bold; color: #495057;">Stato</span>
+                    </td>
+                    
+                    <td th:text="${partita.squadraCasa.nome}" style="text-align: right; font-weight: bold;">Squadra 1</td>
+                    
+                    <!-- Risultato -->
+                    <td style="text-align: center; font-size: 18px; font-weight: bold; color: #2c3e50;">
+                        <span th:text="${partita.goalsHome != null ? partita.goalsHome : '-'}">0</span> 
+                        - 
+                        <span th:text="${partita.goalsAway != null ? partita.goalsAway : '-'}">0</span>
+                    </td>
+                    
+                    <td th:text="${partita.squadraOspite.nome}" style="font-weight: bold;">Squadra 2</td>
+                   
+                    <!-- Bottoni -->
+                    <td>
+                        <a th:href="@{/partita/{id}/commenti(id=${partita.id})}" 
+                           class="btn btn-primary btn-sm">
+                           Vedi Commenti
+                        </a>
+                        
+                        <a th:if="${isAdmin}" 
+                           th:href="@{/admin/partita/{id}/rimuovi(id=${partita.id})}" 
+                           class="btn btn-danger btn-sm" style="margin-left: 10px;">
+                           Rimuovi
+                        </a>
+                    </td>
+                    
+                </tr>
+            </tbody>
+        </table>
 
-    <br>
-    <a href="/tornei">Torna indietro</a>
+        <!-- Link per tornare indietro -->
+        <div class="text-center" style="margin-top: 30px;">
+            <a th:href="@{/tornei}" style="color: #555; text-decoration: none;">&larr; Torna indietro</a>
+        </div>
+
+    </div>
 
 </body>
 </html>

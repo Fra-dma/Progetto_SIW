@@ -1,59 +1,79 @@
-s<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Nuova Squadra</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-    <h1>Inserisci una Nuova Squadra</h1>
+    <div class="container" style="max-width: 600px; margin-top: 50px;">
 
-    <form th:action="@{/admin/squadra/nuova}" th:object="${squadra}" method="post">
-        
-        <!-- Campo Nome -->
-        <div>
-            <label>Nome Squadra:</label><br>
-            <input type="text" th:field="*{nome}" required />
-        </div>
-        <br>
+        <h1 class="text-center" style="color: #2c3e50; margin-bottom: 30px;">Inserisci una Nuova Squadra</h1>
 
-        <!-- Campo Anno di Fondazione -->
-        <div>
-            <label>Anno di Fondazione:</label><br>
-            <input type="number" th:field="*{annoDiFondazione}" required />
-        </div>
-        <br>
-
-        <!-- Campo Città -->
-        <div>
-            <label>Città:</label><br>
-            <input type="text" th:field="*{citta}" required />
-        </div>
-        <br>
-
-        <!-- Selezione Giocatori (Checkbox) -->
-        <div>
-            <label><strong>Seleziona i Giocatori per questa squadra:</strong></label><br>
+        <!-- Card per il modulo -->
+        <div class="card-torneo" style="background-color: #f8f9fa;">
             
-            <!-- Ciclo su tutti i giocatori passati dal Controller -->
-            <div th:each="giocatore : ${elencoGiocatori}">
-                <input type="checkbox" 
-                       th:field="*{giocatori}" 
-                       th:value="${giocatore.id}" />
-                <label th:text="${giocatore.nome} + ' ' + ${giocatore.cognome} + ' (' + ${giocatore.ruolo} + ')'"></label>
-            </div>
-            
-            <p th:if="${#lists.isEmpty(elencoGiocatori)}">Nessun giocatore disponibile nel database.</p>
+            <form th:action="@{/admin/squadra/nuova}" th:object="${squadra}" method="post">
+                
+                <!-- Nome -->
+                <div class="form-group">
+                    <label>Nome Squadra:</label>
+                    <input type="text" th:field="*{nome}" class="form-control" required placeholder="Es. Leoni Milano" />
+                </div>
+
+                <!-- Anno di Fondazione -->
+                <div class="form-group">
+                    <label>Anno di Fondazione:</label>
+                    <input type="number" th:field="*{annoDiFondazione}" class="form-control" required placeholder="Es. 1990" />
+                </div>
+
+                <!-- Città -->
+                <div class="form-group">
+                    <label>Città:</label>
+                    <input type="text" th:field="*{citta}" class="form-control" required placeholder="Es. Milano" />
+                </div>
+
+                <!-- Selezione Giocatori (Checkbox) -->
+                <div class="form-group" style="margin-top: 25px;">
+                    <label style="font-size: 16px; margin-bottom: 10px;">
+                        <strong>Seleziona i Giocatori per questa squadra:</strong>
+                    </label>
+                    
+                    <!-- Riquadro con barra di scorrimento per gestire liste lunghe -->
+                    <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px; padding: 15px; background-color: #ffffff;">
+                        
+                        <!-- Ciclo su tutti i giocatori passati dal Controller -->
+						<div th:each="giocatore : ${elencoGiocatori}" style="display: flex; align-items: center; margin-bottom: 8px;">
+						     <input type="checkbox" 
+						        th:field="*{giocatori}" 
+						        th:value="${giocatore.id}" 
+						        style="margin-right: 10px; margin-top: 0; transform: scale(1.2);" />
+						     <label th:text="${giocatore.nome} + ' ' + ${giocatore.cognome} + ' (' + ${giocatore.ruolo} + ')'" 
+						        style="cursor: pointer; color: #333; margin: 0;"></label>
+						</div>
+                        
+                        <!-- Messaggio se non ci sono giocatori -->
+                        <p th:if="${#lists.isEmpty(elencoGiocatori)}" style="color: #777; font-style: italic; margin: 0; text-align: center;">
+                            Nessun giocatore disponibile nel database.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bottone di invio -->
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 25px; font-size: 16px;">
+                    Salva Squadra
+                </button>
+                
+            </form>
         </div>
-        <br><br>
 
-        <button type="submit" style="padding: 10px 20px; background-color: green; color: white; border: none; cursor: pointer;">
-            Salva Squadra
-        </button>
-    </form>
+        <!-- Link per annullare e tornare alla Dashboard -->
+        <div class="text-center" style="margin-top: 30px;">
+            <a th:href="@{/admin/dashboard}" style="color: #555; text-decoration: none;">&larr; Annulla e torna alla Dashboard</a>
+        </div>
 
-    <br>
-    <a th:href="@{/admin/dashboard}">Annulla e torna alla Dashboard</a>
+    </div>
 
 </body>
 </html>

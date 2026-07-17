@@ -1,6 +1,7 @@
 package it.uniroma3.siw.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,18 +47,40 @@ public class ControllerCommento {
         boolean isLogged = (principal != null);
         model.addAttribute("isLogged", isLogged);
         
-        String currentUser = isLogged ? principal.getName() : "";
+        String currentUser = isLogged ? estraiNomeUtente(principal) : "";
         model.addAttribute("currentUser", currentUser);
         
         return "commenti_partita.html";
     }
     
+    // Metodo di supporto
+    // Questo metodo capisce se l'utente è standard
+    // e ne estrae il nome in modo sicuro.
+    private String estraiNomeUtente(Principal principal) {
+        if (principal instanceof OAuth2AuthenticationToken) {
+            OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) principal;
+            String nome = oauthToken.getPrincipal().getAttribute("name"); // Google
+            if (nome == null) {
+                nome = oauthToken.getPrincipal().getAttribute("login"); // GitHub
+            }
+            return nome != null ? nome : oauthToken.getName();
+        }
+        return principal.getName();
+    }
+    
     @PostMapping("/partita/{id}/commento")
     public String aggiungiCommento(@PathVariable("id") Long idPartita, @RequestParam("testo") String testo, @RequestParam(value = "fileImmagine", required = false) MultipartFile file, Principal principal) {
         
-        String usernameLoggato = principal.getName();
+    	String usernameLoggato = estraiNomeUtente(principal);	
         
         Utente autore = servUtente.findByUsername(usernameLoggato);
+        
+        if (autore == null) {
+            autore = new Utente();
+            autore.setUsername(usernameLoggato);
+            servUtente.salvaUtente(autore); 
+        }
+        	
         Partita partita = servPartita.findById(idPartita);
         
         Commento nuovoCommento = new Commento();
@@ -88,7 +111,8 @@ public class ControllerCommento {
         
         Commento commento = servCommento.findById(id);
         
-        if (commento.getAutore().getUsername().equals(principal.getName())) {
+        // Aggiornato con estraiNomeUtente
+        if (commento.getAutore() != null && commento.getAutore().getUsername().equals(estraiNomeUtente(principal))) {
             commento.setTesto(testo);
             
             if (file != null && !file.isEmpty()) {
@@ -114,7 +138,7 @@ public class ControllerCommento {
         
         Commento commento = servCommento.findById(id); 
         
-        if (!commento.getAutore().getUsername().equals(principal.getName())) {
+        if (commento.getAutore() == null || !commento.getAutore().getUsername().equals(estraiNomeUtente(principal))) {
             return "redirect:/partita/" + commento.getPartita().getId() + "/commenti";
         }
         
