@@ -29,6 +29,11 @@ public class ControllerTorneo {
     @Autowired
     private ServUtente servUtente;
    
+    @GetMapping("/")
+    public String redirectToHome() {
+        // vera pagina home :)
+        return "redirect:/tornei"; 
+    }
 
     @GetMapping("/tornei")
     public String showTornei(Model model, Principal principal) {
