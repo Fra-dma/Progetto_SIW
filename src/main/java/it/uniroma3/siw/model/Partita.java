@@ -1,6 +1,7 @@
 	package it.uniroma3.siw.model;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +21,9 @@ public class Partita {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false)
     private LocalDateTime dataEOra;
+    @Column(nullable = false)
     private String luogo;
     private Integer goalsHome;
     private Integer goalsAway;
