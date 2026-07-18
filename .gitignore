@@ -44,6 +44,3 @@ build/
 ### Maven / Gradle ###
 target/
 build/
-
-# Ignora la nostra cassaforte con le password locali e di OAuth
-src/main/resources/application-segreto.properties
