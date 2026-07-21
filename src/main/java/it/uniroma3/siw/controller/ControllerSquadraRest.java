@@ -1,5 +1,6 @@
 package it.uniroma3.siw.controller;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ public class ControllerSquadraRest {
 
     @GetMapping
     public List<Squadra> getAllSquadre() {
-        return (List<Squadra>) servSquadra.findAllSquadre();
+        List<Squadra> squadre = (List<Squadra>) servSquadra.findAllSquadre(); 
+        return squadre;
     }
     
 }

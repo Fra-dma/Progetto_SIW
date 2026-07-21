@@ -54,12 +54,11 @@ public class ControllerCommento {
     }
     
     // Metodo di supporto
-    // Questo metodo capisce se l'utente è standard
-    // e ne estrae il nome in modo sicuro.
+    // Questo metodo capisce se l'utente è standard e ne estrae il nome
     private String estraiNomeUtente(Principal principal) {
         if (principal instanceof OAuth2AuthenticationToken) {
             OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) principal;
-            String nome = oauthToken.getPrincipal().getAttribute("name"); // Google
+            String nome = oauthToken.getPrincipal().getAttribute("name");
             if (nome == null) {
                 nome = oauthToken.getPrincipal().getAttribute("login"); // GitHub
             }
@@ -69,7 +68,7 @@ public class ControllerCommento {
     }
     
     @PostMapping("/partita/{id}/commento")
-    public String aggiungiCommento(@PathVariable("id") Long idPartita, @RequestParam("testo") String testo, @RequestParam(value = "fileImmagine", required = false) MultipartFile file, Principal principal) {
+    public String aggiungiCommento(@PathVariable("id") Long idPartita, @RequestParam String testo, @RequestParam(value = "fileImmagine", required = false) MultipartFile file, Principal principal) {
         
     	String usernameLoggato = estraiNomeUtente(principal);	
         
@@ -104,7 +103,7 @@ public class ControllerCommento {
     }
 
     @PostMapping("/commento/{id}/modifica")
-    public String salvaModificaCommento(@PathVariable("id") Long id, @RequestParam("testo") String testo, @RequestParam(value = "fileImmagine", required = false) MultipartFile file, Principal principal) {
+    public String salvaModificaCommento(@PathVariable Long id, @RequestParam String testo, @RequestParam(value = "fileImmagine", required = false) MultipartFile file, Principal principal) {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -131,7 +130,7 @@ public class ControllerCommento {
     }
     
     @GetMapping("/commento/{id}/modifica")
-    public String formModificaCommento(@PathVariable("id") Long id, Model model, Principal principal) {
+    public String formModificaCommento(@PathVariable Long id, Model model, Principal principal) {
         if (principal == null) {
             return "redirect:/login";
         }

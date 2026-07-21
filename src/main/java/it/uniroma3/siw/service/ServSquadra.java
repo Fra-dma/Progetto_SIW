@@ -27,5 +27,10 @@ public class ServSquadra {
     public Squadra salvaSquadra(Squadra squadra) {
         return repoSquadra.save(squadra);
     }
+    
+    @Transactional(readOnly = true)
+    public Squadra findSquadraConGiocatori(Long id) {
+        return repoSquadra.findByIdWithGiocatori(id);
+    }
 
 }

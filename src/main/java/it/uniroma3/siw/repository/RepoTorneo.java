@@ -11,8 +11,10 @@ import it.uniroma3.siw.model.Torneo;
 
 public interface RepoTorneo extends CrudRepository<Torneo, Long>{
 	
-	// METODOI DI TEST PER ANALISI SPERIMENTALE
+	@Query("SELECT t FROM Torneo t LEFT JOIN FETCH t.squadrePartecipanti WHERE t.id = :id")
+	Optional<Torneo> findByIdWithSquadre(@Param("id") Long id);
 	
+	// METODOI DI TEST PER ANALISI SPERIMENTALE
 	//Lazy
 	Optional<Torneo> findById(Long id);
 	

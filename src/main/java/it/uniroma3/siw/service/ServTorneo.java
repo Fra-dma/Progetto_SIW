@@ -8,6 +8,7 @@ import it.uniroma3.siw.model.Squadra;
 import it.uniroma3.siw.model.Partita;
 import it.uniroma3.siw.repository.RepoPartita;
 import it.uniroma3.siw.repository.RepoTorneo;
+import jakarta.persistence.EntityManager;
 import it.uniroma3.siw.model.ClassificaSquadra;
 
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ public class ServTorneo {
 
     @Autowired
     private RepoPartita repoPartita;
+    
+    @Autowired
+    private EntityManager entityManager;
 
     @Transactional(readOnly = true)
     public List<Torneo> findAllTornei() {
@@ -45,6 +49,10 @@ public class ServTorneo {
         return repoTorneo.save(torneo);
     }
     
+    @Transactional(readOnly = true)
+    public Torneo findTorneoConPartite(Long id) {
+        return repoTorneo.findByIdWithPartiteEager(id).orElse(null);
+    }
     
     @Transactional(readOnly = true)
     public Torneo findById(Long id) {
@@ -53,7 +61,7 @@ public class ServTorneo {
 
     @Transactional(readOnly = true)
     public List<ClassificaSquadra> calcolaClassifica(Long idTorneo) {
-        Torneo torneo = repoTorneo.findById(idTorneo).orElse(null);
+    	Torneo torneo = repoTorneo.findByIdWithSquadre(idTorneo).orElse(null);
         List<ClassificaSquadra> classificaFinale = new ArrayList<>();
 
         if (torneo == null) {
@@ -104,54 +112,63 @@ public class ServTorneo {
         return classificaFinale;
     }
     
-    /**
+     /**
      * ESPERIMENTO PER L'ANALISI DELLE PRESTAZIONI
      */
-    @Transactional(readOnly = true)
-    public void eseguiAnalisiSperimentale(Long idTorneo) {
+     @Transactional(readOnly = true)
+     public void eseguiAnalisiSperimentale(Long idTorneo) {
         System.out.println("=== INIZIO ANALISI SPERIMENTALE ===");
 
         // APPROCCIO LAZY
-        long startLazy = System.currentTimeMillis();
+        long startLazy = System.nanoTime();
         
         Torneo torneoLazy = this.repoTorneo.findById(idTorneo).orElse(null);
         if (torneoLazy != null) {
             int numeroPartite = torneoLazy.getPartite().size(); 
+            System.out.println("Trovate " + numeroPartite + " partite con approccio LAZY");
         }
         
-        long endLazy = System.currentTimeMillis();
+        long endLazy = System.nanoTime();
         long tempoLazy = endLazy - startLazy;
+
+        // Pulisco la cache di Hibernate prima del prossimo test
+        entityManager.clear();
 
 
         // APPROCCIO JOIN FETCH
-        long startEager = System.currentTimeMillis();
+        long startEager = System.nanoTime();
         
         Torneo torneoEager = this.repoTorneo.findByIdWithPartiteEager(idTorneo).orElse(null);
         if (torneoEager != null) {
             int numeroPartite = torneoEager.getPartite().size();
+            System.out.println("Trovate " + numeroPartite + " partite con approccio JOIN FETCH");
         }
         
-        long endEager = System.currentTimeMillis();
+        long endEager = System.nanoTime();
         long tempoEager = endEager - startEager;
+
+        // Pulisco la cache di Hibernate prima del prossimo test
+        entityManager.clear();
 
 
         // APPROCCIO ENTITY GRAPH
-        long startGraph = System.currentTimeMillis();
+        long startGraph = System.nanoTime();
         
         Torneo torneoGraph = this.repoTorneo.findTorneoById(idTorneo).orElse(null);
         if (torneoGraph != null) {
             int numeroPartite = torneoGraph.getPartite().size();
+            System.out.println("Trovate " + numeroPartite + " partite con approccio ENTITY GRAPH");
         }
         
-        long endGraph = System.currentTimeMillis();
+        long endGraph = System.nanoTime();
         long tempoGraph = endGraph - startGraph;
 
 
         // STAMPA DEI RISULTATI
         System.out.println("===================================");
-        System.out.println("Tempo LAZY (N+1 query): " + tempoLazy + " ms");
-        System.out.println("Tempo JOIN FETCH (Query manuale ottimizzata): " + tempoEager + " ms");
-        System.out.println("Tempo ENTITY GRAPH (Query automatica ottimizzata): " + tempoGraph + " ms");
+        System.out.println("Tempo LAZY (N+1 query): " + (tempoLazy / 1_000_000.0) + " ms");
+        System.out.println("Tempo JOIN FETCH: " + (tempoEager / 1_000_000.0) + " ms");
+        System.out.println("Tempo ENTITY GRAPH: " + (tempoGraph / 1_000_000.0) + " ms");
         System.out.println("===================================");
     }
 }

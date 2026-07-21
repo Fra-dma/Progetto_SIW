@@ -12,6 +12,7 @@ import it.uniroma3.siw.model.Giocatore;
 import it.uniroma3.siw.model.Squadra;
 import it.uniroma3.siw.service.ServGiocatore;
 import it.uniroma3.siw.service.ServSquadra;
+
 import java.util.List;
 
 @Controller
@@ -31,12 +32,12 @@ public class ControllerSquadra {
     }
     
     @GetMapping("/squadra/{id}")
-    public String showSquadra(@PathVariable("id") Long id, Model model) {
-        Squadra squadra = servSquadra.findById(id);
+    public String showSquadra(@PathVariable Long id, Model model) {
+    	Squadra squadra = servSquadra.findSquadraConGiocatori(id);
+    	
+    	List<Giocatore> giocatori = squadra.getGiocatori();
         
-        List<Giocatore> giocatori = servGiocatore.findBySquadra(squadra);
-        
-        model.addAttribute("squadra", squadra);
+    	model.addAttribute("squadra", squadra);
         model.addAttribute("giocatori", giocatori);
         
         return "squadra.html";
@@ -53,17 +54,14 @@ public class ControllerSquadra {
     }
 
     @PostMapping("/admin/squadra/nuova")
-    public String salvaSquadra(@ModelAttribute("squadra") Squadra squadra) {
+    public String salvaSquadra(@ModelAttribute Squadra squadra) {
         
-        // 1. Salviamo prima la squadra per generare il suo ID nel database
+        // salvo la squadra nel DB per generare l'id
         Squadra squadraSalvata = servSquadra.salvaSquadra(squadra);
         
-        // 2. Se l'admin ha selezionato dei giocatori dalla lista delle checkbox...
         if (squadra.getGiocatori() != null) {
             for (Giocatore g : squadra.getGiocatori()) {
-                // ... diciamo a ogni giocatore qual è la sua nuova squadra
                 g.setSquadra(squadraSalvata);
-                // Salviamo l'aggiornamento del giocatore nel database
                 servGiocatore.salvaGiocatore(g); 
             }
         }

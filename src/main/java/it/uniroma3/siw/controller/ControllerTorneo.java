@@ -1,4 +1,4 @@
-	package it.uniroma3.siw.controller;
+package it.uniroma3.siw.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,6 +18,7 @@ import it.uniroma3.siw.service.ServTorneo;
 import it.uniroma3.siw.service.ServUtente;
 
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -39,6 +40,8 @@ public class ControllerTorneo {
     public String showTornei(Model model, Principal principal) {
         List<Torneo> tornei = servTorneo.findAllTornei();
         
+        tornei.sort(Comparator.comparing(Torneo :: getNome));
+        
      // Logica per verificare se è Admin
         boolean isAdmin = false;
         if (principal != null) {
@@ -54,9 +57,11 @@ public class ControllerTorneo {
     }
     
     @GetMapping("/torneo/{id}/classifica")
-    public String showClassifica(@PathVariable("id") Long id, Model model, Principal principal) {
+    public String showClassifica(@PathVariable Long id, Model model, Principal principal) {
     	
-    	servTorneo.eseguiAnalisiSperimentale(id);
+    	if (id == 101L) { // Esegue il test SOLO per il torneo per l'analisi
+    	    servTorneo.eseguiAnalisiSperimentale(id);
+    	}
         
         // Recupero il torneo per mostrare il suo nome nella pagina HTML
         Torneo torneo = servTorneo.findById(id);
@@ -83,12 +88,18 @@ public class ControllerTorneo {
     }
     
     @GetMapping("/torneo/{id}/partite")
-    public String showPartite(@PathVariable("id") Long id, Model model, Principal principal) {
+    public String showPartite(@PathVariable Long id, Model model, Principal principal) {
         
-        Torneo torneo = servTorneo.findById(id);
+    	Torneo torneo = servTorneo.findTorneoConPartite(id);
+    	
+    	if (torneo == null) {
+            return "redirect:/tornei"; 
+        }
         
         List<Partita> partite = torneo.getPartite();
         model.addAttribute("elencoPartite", partite); 
+        
+        partite.sort(Comparator.comparing(Partita :: getDataEOra));
        
         boolean isAdmin = false;
         if (principal != null) {
@@ -117,7 +128,7 @@ public class ControllerTorneo {
     }
     
     @GetMapping("/admin/torneo/{id}/gestisciPartite")
-    public String gestisciPartite(@PathVariable("id") Long id, Model model) {
+    public String gestisciPartite(@PathVariable Long id, Model model) {
         Torneo torneo = servTorneo.findById(id);
         model.addAttribute("torneo", torneo);
         return "admin/gestisciPartite.html"; 
